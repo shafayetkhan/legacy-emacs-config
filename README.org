@@ -1,0 +1,5 @@
+* Dotfiles
+  Bootstrapping my dotfiles
+
+* Usage
+  Run the following command to bootstrap all settings.
