@@ -4,7 +4,7 @@
 * Usage
   Run the following command to bootstrap all settings.
 
-  #+begin_sh options
+#+BEGIN_SRC sh
 cd ~/dotfiles
 script/bootstrap
-  #+end_sh
+#+END_SRC
