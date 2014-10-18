@@ -3,3 +3,8 @@
 
 * Usage
   Run the following command to bootstrap all settings.
+
+  #+begin_sh options
+cd ~/dotfiles
+script/bootstrap
+  #+end_sh
