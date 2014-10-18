@@ -5,7 +5,7 @@
 EMACS_ROOT="`pwd`/emacs"
 echo $EMACS_ROOT
 
-EMACS_DIR="$HOME/emacsdtest"
+EMACS_DIR="$HOME/.emacs.d"
 echo $EMACS_DIR
 
 # Add all the directories to create
