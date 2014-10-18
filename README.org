@@ -5,6 +5,7 @@
   Run the following command to bootstrap all settings.
 
 #+BEGIN_SRC sh
-cd ~/dotfiles
+git clone https://github.com/shafayetkhan/dotfiles.git ~/.dotfiles
+cd ~/.dotfiles
 script/bootstrap
 #+END_SRC
