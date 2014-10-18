@@ -1,0 +1,25 @@
+[hub]
+    protocol = https
+
+[user]
+    name = Shafayet Khan
+    email = shafayetkhan@gmail.com
+
+[color]
+    diff = auto
+    status = auto
+    branch = auto
+    ui = true
+
+[core]
+    excludesfile = ~/.gitignore
+    editor = emacs
+
+[apply]
+    whitespace = nowarn
+
+[difftool]
+    prompt = false
+
+[help]
+    autocorrect = 1

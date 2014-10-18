@@ -1,0 +1,124 @@
+#!/usr/bin/env bash
+#
+# bootstrap-emacs installs emacs things.
+
+EMACS_ROOT="`pwd`/emacs"
+echo $EMACS_ROOT
+
+EMACS_DIR="$HOME/emacsdtest"
+echo $EMACS_DIR
+
+# Add all the directories to create
+EMACS_DIRS=( $EMACS_DIR "$EMACS_DIR/lisp" )
+
+set -e
+
+echo ''
+
+info () {
+  printf "  [ \033[00;34m..\033[0m ] $1"
+}
+
+user () {
+   printf "\r  [ \033[0;33m?\033[0m ] $1 "
+}
+
+success () {
+  printf "\r\033[2K  [ \033[00;32mOK\033[0m ] $1\n"
+}
+
+link_files () {
+  ln -s $1 $2
+  success "linked $1 to $2"
+}
+
+
+
+setup_emacsd() {
+    info 'setting up .emacsd'
+
+    echo ''
+
+    skip=false
+
+    if [ -d $EMACS_DIR ]
+    then
+
+        overwrite=false
+        backup=false
+
+
+        user "File already exists: `basename $EMACS_DIR`, what do you want to do? [s]kip, [o]verwrite, [b]ackup?"
+        read -n 1 action
+
+        case "$action" in
+            o )
+              overwrite=true;;
+            s )
+              skip=true;;
+            b )
+              backup=true;;
+            * )
+              ;;
+        esac
+
+
+        if [ "$overwrite" == "true" ]
+        then
+            rm -rf $EMACS_DIR
+            success "removed $EMACS_DIR"
+        fi
+
+        if [ "$backup" == true ]
+        then
+            timestamp=$(date +%s)
+            if [ -d "$EMACS_DIR-$timestamp" ]
+            then
+                rm -rf "$EMACS_DIR-$timestamp"
+                success "deleted existing backups"
+            fi
+            mv $EMACS_DIR "$EMACS_DIR-$timestamp"
+            success "backed up $EMACS_DIR to $EMACS_DIR-$timestamp"
+        fi
+
+        if [ "$skip" == "false" ]
+        then
+            make_emacs_dirs
+        else
+            success "skipped creating $EMACS_DIR"
+        fi
+
+    else
+        make_emacs_dirs
+    fi
+
+    if [ "$skip" == "false" ]
+    then
+        link_org_files
+    else
+        success "skipped linking org files"
+    fi
+
+}
+
+make_emacs_dirs(){
+
+
+    for emacs_directory in ${EMACS_DIRS[@]}
+    do
+        mkdir ${emacs_directory}
+        success "created directory: $emacs_directory"
+   done
+}
+
+link_org_files(){
+    printf "in link_org_files func"
+    for org_file_source in `find $EMACS_ROOT -maxdepth 2 -name \*.orgsymlink`
+    do
+        dest="$EMACS_DIR/`basename \"${org_file_source%.*}\"`.org"
+        link_files $org_file_source $dest
+
+    done
+}
+
+setup_emacsd

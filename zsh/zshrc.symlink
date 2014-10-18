@@ -1,0 +1,150 @@
+# Path to your oh-my-zsh installation.
+export ZSH=$HOME/.oh-my-zsh
+
+# Set name of the theme to load.
+# Look in ~/.oh-my-zsh/themes/
+# Optionally, if you set this to "random", it'll load a random theme each
+# time that oh-my-zsh is loaded.
+ZSH_THEME="robbyrussell"
+
+# Uncomment the following line to use case-sensitive completion.
+# CASE_SENSITIVE="true"
+
+# Uncomment the following line to disable bi-weekly auto-update checks.
+# DISABLE_AUTO_UPDATE="true"
+
+# Uncomment the following line to change how often to auto-update (in days).
+# export UPDATE_ZSH_DAYS=13
+
+# Uncomment the following line to disable colors in ls.
+# DISABLE_LS_COLORS="true"
+
+# Uncomment the following line to disable auto-setting terminal title.
+# DISABLE_AUTO_TITLE="true"
+
+# Uncomment the following line to enable command auto-correction.
+# ENABLE_CORRECTION="true"
+
+# Uncomment the following line to display red dots whilst waiting for completion.
+# COMPLETION_WAITING_DOTS="true"
+
+# Uncomment the following line if you want to disable marking untracked files
+# under VCS as dirty. This makes repository status check for large repositories
+# much, much faster.
+# DISABLE_UNTRACKED_FILES_DIRTY="true"
+
+# Uncomment the following line if you want to change the command execution time
+# stamp shown in the history command output.
+# The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
+# HIST_STAMPS="mm/dd/yyyy"
+
+# Would you like to use another custom folder than $ZSH/custom?
+# ZSH_CUSTOM=/path/to/new-custom-folder
+
+# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
+# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
+# Example format: plugins=(rails git textmate ruby lighthouse)
+# Add wisely, as too many plugins slow down shell startup.
+plugins=(git)
+
+source $ZSH/oh-my-zsh.sh
+
+# User configuration
+
+export PATH="/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin"
+# export MANPATH="/usr/local/man:$MANPATH"
+
+# You may need to manually set your language environment
+# export LANG=en_US.UTF-8
+
+# Preferred editor for local and remote sessions
+# if [[ -n $SSH_CONNECTION ]]; then
+#   export EDITOR='vim'
+# else
+#   export EDITOR='mvim'
+# fi
+
+# Compilation flags
+# export ARCHFLAGS="-arch x86_64"
+
+# ssh
+# export SSH_KEY_PATH="~/.ssh/dsa_id"
+
+# Set personal aliases, overriding those provided by oh-my-zsh libs,
+# plugins, and themes. Aliases can be placed here, though oh-my-zsh
+# users are encouraged to define aliases within the ZSH_CUSTOM folder.
+# For a full list of active aliases, run `alias`.
+#
+# Example aliases
+# alias zshconfig="mate ~/.zshrc"
+# alias ohmyzsh="mate ~/.oh-my-zsh"
+
+plugins=(git history history-substring-search brew)
+
+####
+
+#2 Install Command Line Tools from Xcode -> Preferences -> Downloads
+#3 Install homebrew -> http://brew.sh/ | brew doctor | brew update
+#4 brew install python
+#5 brew install git
+#6 brew install bazaar | brew install emacs --HEAD --cocoa --srgb
+#7 ln -s /usr/local/Cellar/emacs/24.3/Emacs.app /Applications
+#8 alias emacs="/usr/local/Cellar/emacs/24.3/Emacs.app/Contents/MacOS/Emacs -nw"
+#9 pip install virtualenv
+#10 pip install virtualenvwrapper
+##For emacs spell heck install aspell as below
+#11 brew install aspell --all
+
+# Virtualenv and Virtualenvwrapper configs
+export WORKON_HOME=$HOME/.virtualenvs
+export PROJECT_HOME=$HOME/Dev/Python
+
+export PATH=/usr/local/bin:$PATH
+#export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python
+#export VIRTUALENVWRAPPER_VIRTUALENV=/usr/local/bin/virtualenv
+#source /usr/local/share/python/virtualenvwrapper.sh
+source /usr/local/bin/virtualenvwrapper.sh
+
+# pip should only run if there is a virtualenv currently activated
+export PIP_REQUIRE_VIRTUALENV=true
+# cache pip-installed packages to avoid re-downloading
+export PIP_DOWNLOAD_CACHE=$HOME/.pip/cache
+# Default Arguments for virtualenv
+export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--no-site-packages'
+
+
+# Upgrade Global Package such as pip, distribute, virtualenv
+syspip(){
+   PIP_REQUIRE_VIRTUALENV="" pip "$@"
+}
+#Use the following code: syspip install --upgrade pip distribute virtualenv
+
+
+### default editor to Emacs
+export EDITOR=emacs
+
+# Dev SERVER
+export APP_ENV='dev'
+export SECRET_KEY='5084942545'
+
+### Added by the Heroku Toolbelt
+export PATH="/usr/local/heroku/bin:$PATH"
+
+### Postgresql
+export PATH="/Applications/Postgres93.app/Contents/MacOs/bin:$PATH"
+
+# Emacs
+# Create a file called xemacs in /usr/local/Cellar/emacs/HEAD/bin/
+# This way, xemacs will launch emacs gui and emacs will launch emacs in terminal
+# #!/bin/bash
+# /Applications/Emacs.app/Contents/MacOS/Emacs "$@"
+
+export PATH="/usr/local/Cellar/emacs/HEAD/bin:$PATH"
+alias ec='/usr/local/Cellar/emacs/HEAD/bin/emacsclient'
+
+
+# Set Bash History to 32768
+export HISTSIZE=32768
+
+# Set PYTHONPATH
+export PYTHONPATH="/Users/shafayet/Dev/Python:$PYTHONPATH:$PATH"
