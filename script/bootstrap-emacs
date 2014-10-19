@@ -95,6 +95,7 @@ setup_emacsd() {
     if [ "$skip" == "false" ]
     then
         link_org_files
+        link_el_files
     else
         success "skipped linking org files"
     fi
@@ -112,11 +113,21 @@ make_emacs_dirs(){
 }
 
 link_org_files(){
-    printf "in link_org_files func"
+#    printf "in link_org_files func"
     for org_file_source in `find $EMACS_ROOT -maxdepth 2 -name \*.orgsymlink`
     do
         dest="$EMACS_DIR/`basename \"${org_file_source%.*}\"`.org"
         link_files $org_file_source $dest
+
+    done
+}
+
+link_el_files(){
+#    printf "in link_org_files func"
+    for el_file_source in `find $EMACS_ROOT -maxdepth 2 -name \*.elsymlink`
+    do
+        dest="$EMACS_DIR/`basename \"${el_file_source%.*}\"`.el"
+        link_files $el_file_source $dest
 
     done
 }

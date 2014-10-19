@@ -1,31 +1,4 @@
-;;; -*- Mode: Emacs-Lisp -*-
 
-;;;;; Shafayet's .emacs file
-;; Shafayet Khan
-;; 2014
-
-;;; * Load-patch
-;; Load .emacs.d
-(setq load-path (cons "~/.emacs.d/lisp" load-path))
-;; Load other custom init-files
-;(load "~/.emacs.d/my-custom-init-file.el")
-; or
-; load-path
-; (add-to-list 'load-path "~/.emacs.d/")
-; exec-path
-; (add-to-list 'exec-path "~/bin/")
-
-;; Load init-files after placing them in ~/.emacs.d directory
-; (add-hook 'after-init-hook '(lambda ()
-;                               (load "~/.emacs.d/my-custom-init-file.el")
-;                               (load "~/.emacs.d/my-other-custom-init-file.el")
-;                               ))
-
-
-
-;;; * Package
-
-;; Setup ELPA package sources
 (require 'cl)
 
 ;;; melpa, marmalade
@@ -88,9 +61,6 @@
       (package-install p))))
 
 (mapc 'require shafayet-packages)
-
-
-;;; * Preferences
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -231,10 +201,6 @@
 ;;; Skip the Startup Message
 (setq inhibit-startup-message t)
 
-
-
-;;; * Extensions
-;;; ** yasnippet
 (yas-global-mode 1)
 ;(yas-load-directory "~/.emacs.d/snippets")
 (add-hook 'term-mode-hook (lambda()
@@ -243,8 +209,6 @@
 ;;; ** exec-path-from-shell
 (when (memq window-system '(mac ns))
   (exec-path-from-shell-initialize))
-
-;;; ** Ace Jump
 
 ;; ace jump mode major function
 (autoload
@@ -266,27 +230,22 @@
   '(ace-jump-mode-enable-mark-sync))
 (define-key global-map (kbd "C-x SPC") 'ace-jump-mode-pop-mark)
 
-;;; ** Multiple Cursors
 (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
 (global-set-key (kbd "C->") 'mc/mark-next-like-this)
 (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
 (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 
-
-;;; ** Smex bindings
 (global-set-key (kbd "M-x") 'smex)
 (global-set-key (kbd "M-X") 'smex-major-mode-commands)
 ;; This is your old M-x.
 (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
 
-;;; ** ido-vertical-mode
 (ido-mode 1)
 (ido-vertical-mode 1)
 ;; Use up and down to navigate the options
 (setq ido-vertical-define-keys 'C-n-C-p-up-down)
 ;; Use left and right to move through history/directories
 (setq ido-vertical-define-keys 'C-n-C-p-up-down-left-right)
-
 
 ;;; ** Magit
 ;; Magit Keybindings
@@ -296,7 +255,6 @@
 (define-key global-map (kbd "C-c g l") 'magit-log)
 (setq magit-emacsclient-executable "/usr/local/Cellar/emacs/HEAD/bin/emacsclient")
 
-;;; ** Autocomplete
 ;; Auto-complete Mode Extra Settings
 (setq
  ac-auto-start 2
@@ -306,7 +264,6 @@
 
 (global-auto-complete-mode t)
 
-;;; ** Jedi
 ;;; Jedi Settings
 (require 'jedi)
 
@@ -314,13 +271,11 @@
 (setq jedi:setup-keys t)                      ; optional
 (setq jedi:complete-on-dot t)
 
-;;; ** flymake-python
 (require 'flymake-python-pyflakes)
 (add-hook 'python-mode-hook 'flymake-python-pyflakes-load)
 (global-set-key [f10] 'flymake-goto-prev-error)
 (global-set-key [f11] 'flymake-goto-next-error)
 
-;;; ** Flyspell
 ;; Flyspell for Org-mode
 (add-hook 'org-mode-hook 'flyspell-mode)
 
@@ -340,7 +295,6 @@
 (require 'expand-region)
 (global-set-key (kbd "C-=") 'er/expand-region)
 
-;;; ** Rainbow-mode
 ;; Rainbow mode
 ;;(require 'rainbow-delimiters)
 ;;(rainbow-delimiters-mode t)
@@ -360,16 +314,13 @@
 ;;   (set-face-foreground 'rainbow-delimiters-unmatched-face "white"))
 ;; (add-hook 'rainbow-delimiters-mode-hook 'rainbow-delimiters-colors)
 
-;;; ** visual-regexp
 (require 'visual-regexp)
 (define-key global-map (kbd "C-c r") 'vr/replace)
 (define-key global-map (kbd "C-c q") 'vr/query-replace)
 
-;;; ** org-bullets
 (require 'org-bullets)
 (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 
-;;; ** powerline
 (require 'powerline)
 (powerline-default-theme)
 
@@ -484,9 +435,6 @@ mouse-3: go to end")
                       (powerline-render rhs)))))))
 
 (powerline-ha-theme)
-
-
-;;; * Visual Stuff
 
 ;; Toggle Fullscreen
 ;; Does not work
@@ -627,10 +575,6 @@ mouse-3: go to end")
 ;;  '(web-mode-html-attr-value-face ((t (:foreground "#E6DB74"))))
 ;;  '(web-mode-html-tag-face ((t (:foreground "#f92672")))))
 
-
-
-;;; * Org
-
 ;;; Orgstruct minor mode
 ;(add-hook 'emacs-lisp-mode-hook 'turn-on-orgstruct)
 (add-hook 'emacs-lisp-mode-hook 'turn-on-orgstruct++)
@@ -652,11 +596,6 @@ mouse-3: go to end")
 ;; Set a password
 (setq org-mobile-encryption-password "shafayet")
 
-
-
-
-;;; * Environments
-;;; ** Python-mode
 ;; Python Mode Settings
 (require 'python-mode)
 (add-to-list 'auto-mode-alist '("\\.py$" . python-mode))
@@ -664,8 +603,6 @@ mouse-3: go to end")
 (add-hook 'python-mode-hook 'autopair-mode)
 (add-hook 'python-mode-hook 'yas-minor-mode)
 
-
-;;; ** Web-mode
 ;; Web-Mode Settings
 (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
@@ -685,20 +622,15 @@ mouse-3: go to end")
 )
 (add-hook 'web-mode-hook  'web-mode-hook)
 
-;;; ** js2-mode
 ;;  js2-mode Settings
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 (add-to-list 'auto-mode-alist '("\\.json$" . js2-mode))
 
-
-;;; ** c-mode
-;C-mode-common-hook
 (defun my-c-mode-common-hook ()
   (setq c-basic-offset 4)
   (c-set-offset 'substatement-open 0))
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
-;;; * Custom Stuff
 ;;; ** Custom Functions
 ;;; *** Smarter move to beginning of line
 ;; Collected from: http://emacsredux.com/blog/2013/05/22/smarter-navigation-to-the-beginning-of-a-line/
@@ -779,15 +711,6 @@ See: `ergoemacs-forward-block'"
 ;; map M-n to `ergoemacs-backward-block'
 (global-set-key (kbd "M-p") 'ergoemacs-backward-block)
 
-
-
-;;; * Workarounds
-
-;; Workaround - Rebind { key to c-electric-brace instead of
-
-
-
-;;; * Win32
 ;; Win32 Setup
 (when (eq window-system 'w32)
   (setq default-directory "C:/Users/shafi/home")
@@ -809,14 +732,3 @@ See: `ergoemacs-forward-block'"
             (lambda ()
               (local-set-key (kbd "{") 'c-electric-brace)))
   (message "Emacs on Windows"))
-
-;; (custom-set-faces
-;;  ;; custom-set-faces was added by Custom.
-;;  ;; If you edit it by hand, you could mess it up, so be careful.
-;;  ;; Your init file should contain only one such instance.
-;;  ;; If there is more than one, they won't work right.
-;;  '(mode-line-buffer-id ((t (:foreground "black" :bold t))))
-;;  '(org-block-background ((t (:background "#111111"))))
-;;  '(org-block-begin-line ((t (:foreground "#008ED1" :background "#002E41"))) t)
-;;  '(org-block-end-line ((t (:foreground "#008ED1" :background "#002E41"))) t)
-;;  '(which-func ((t (:foreground "green")))))
