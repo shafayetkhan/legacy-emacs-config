@@ -14,6 +14,7 @@
 
 (defvar shafayet-packages
       '(
+        org
         python-mode
         virtualenvwrapper
         flymake-easy
@@ -574,6 +575,9 @@ mouse-3: go to end")
 ;;  '(web-mode-html-attr-name-face ((t (:foreground "#7fe22e"))))
 ;;  '(web-mode-html-attr-value-face ((t (:foreground "#E6DB74"))))
 ;;  '(web-mode-html-tag-face ((t (:foreground "#f92672")))))
+
+(eval-after-load "org"
+  '(require 'ox-md nil t))
 
 ;;; Orgstruct minor mode
 ;(add-hook 'emacs-lisp-mode-hook 'turn-on-orgstruct)

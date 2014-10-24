@@ -7,6 +7,7 @@
 
 ;; Load up Org Mode and (now included) Org Babel for elisp embedded in Org Mode files
 (setq load-path (cons "~/.emacs.d/lisp/org-mode/contrib/lisp" load-path))
+
 (require 'package)
 (package-initialize)
 
