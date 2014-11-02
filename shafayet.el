@@ -1,1 +1,0 @@
-/Users/shafayet/.emacs.d/shafayet.el

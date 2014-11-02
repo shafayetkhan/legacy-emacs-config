@@ -18,7 +18,71 @@
   repository.
 
 ** dotfiles
-   Here I will briefly describe how the scripts work
+   Here I will briefly describe how the scripts work. Bootstraping the dotfiles
+   is inspired from [[https://github.com/holman/dotfiles][holman does dotfiles]]. I have added a couple more scripts to
+   bootstrap my emacs configuration files.
+
+   Keeping dotfiles in a central repository can be time-saving and effortless
+   when setting up a new environment. I like to clone my repo and simply install
+   all the dotfiles using the following commands:
+
+#+BEGIN_SRC sh
+git clone https://github.com/shafayetkhan/dotfiles.git ~/.dotfiles
+cd ~/.dotfiles
+script/bootstrap
+#+END_SRC
+
+   Dotfiles are files that start with a dot and are mainly used for storing
+   configuration settings. The rules are simple: name the config file with the
+   extension *.symlink* and the dotfile will be installed into the home folder
+   using the first part of the file until .symlink.
+
+   I like to use emacs as my text editor/terminal and so bootstrapping my emacs
+   config file using a sane method is important. I'm using org-babel's literate
+   programming to comment and annotate useful information. I refer to this
+   document when setting up my environment first.
+
+   The first point of entry for emacs is the init.el file. Executing the
+   commands above will place init.el inside the .emacs.d directory in the home
+   directory. The init.el file contains elisp code that loads Org-mode and then
+   loads the rest of the Emacs initialization from Emacs lisp embedded in
+   literate org-mode files.
+
+#+begin_src emacs-lisp :tangle yes
+;; Load up Org Mode and (now included) Org Babel for elisp embedded in Org Mode files
+(setq load-path (cons "~/.emacs.d/lisp/org-mode/contrib/lisp" load-path))
+(require 'package)
+(package-initialize)
+
+(setq dotfiles-dir (file-name-directory (or (buffer-file-name) load-file-name)))
+
+(let* ((org-dir (expand-file-name
+                 "lisp" (expand-file-name
+                         "org" (expand-file-name
+                                "src" dotfiles-dir))))
+       (org-contrib-dir (expand-file-name
+                         "lisp" (expand-file-name
+                                 "contrib" (expand-file-name
+                                            ".." org-dir))))
+       (load-path (append (list org-dir org-contrib-dir)
+                          (or load-path nil))))
+  ;; load up Org-mode and Org-babel
+  (require 'org-install)
+  (require 'ob-tangle))
+
+;; load up all literate org-mode files in this directory
+;; file-truename: https://www.gnu.org/software/emacs/manual/html_node/elisp/Truenames.html
+(dolist (orgfile (directory-files dotfiles-dir t "\\.org$"))
+  (org-babel-load-file (file-truename orgfile)))
+
+;;; init.el ends here
+#+end_src
+
+   Currently, I'm using only one literate org-mode file, conveniently called
+   shafayet.org. However, I'm considering branching out my configuration file
+   like [[https://github.com/howardabrams/dot-files][Howard Abrams]] does.
+
+
 * Load-patch
 #+begin_src elisp
 (setq load-path (cons "~/.emacs.d/lisp/org-mode/contrib/lisp" load-path))
@@ -805,6 +869,20 @@ mouse-3: go to end")
 
 
 * Custom Stuff
+
+Unfill Paragraph
+
+#+begin_src emacs-lisp :tangle yes
+(defun unfill-paragraph ()
+  (interactive)
+  (let ((fill-column (point-max)))
+    (fill-paragraph nil)))
+
+(defun unfill-region ()
+  (interactive)
+  (let ((fill-column (point-max)))
+    (fill-region (region-beginning) (region-end) nil)))
+#+end_src
 
 #+begin_src emacs-lisp :tangle yes
 ;;; ** Custom Functions

@@ -635,6 +635,16 @@ mouse-3: go to end")
   (c-set-offset 'substatement-open 0))
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
+(defun unfill-paragraph ()
+  (interactive)
+  (let ((fill-column (point-max)))
+    (fill-paragraph nil)))
+
+(defun unfill-region ()
+  (interactive)
+  (let ((fill-column (point-max)))
+    (fill-region (region-beginning) (region-end) nil)))
+
 ;;; ** Custom Functions
 ;;; *** Smarter move to beginning of line
 ;; Collected from: http://emacsredux.com/blog/2013/05/22/smarter-navigation-to-the-beginning-of-a-line/
