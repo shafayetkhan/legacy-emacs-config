@@ -17,6 +17,54 @@
   emacs configuration and other dot files, you might be interested in this
   repository.
 
+** Basic housekeeping
+   Switch default shell to zsh. Use config from OH MY ZSH. Install XCode command
+   line tools.
+
+#+BEGIN_SRC sh
+chsh -s /bin/zsh
+curl -L https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh | sh
+xcode-select --install
+#+END_SRC
+
+   Before installing emacs, it is important to install a package manager for OS
+   X. Homebrew is great for package management. If not already installed, get
+   homebrew by executing the following commands in shell:
+
+#+BEGIN_SRC sh
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+#+END_SRC
+
+   Remove any previous version of emacs installed by homebrew and install emacs
+   using the following commands in shell:
+
+   Helpful information available at:
+   [[http://derjan.io/blog/2013/11/25/setup-mac-for-development/][Setup Mac OS X for development]]
+
+
+#+BEGIN_SRC sh
+# Remove older versions of emacs
+brew rm emacs
+# Install emacs
+brew install emacs --cocoa --srgb
+# Alternatively Install emacs from HEAD
+brew install emacs --HEAD --cocoa --srgb
+# Link Emacs shortcuts
+brew linkapps
+#+END_SRC
+
+   Install the latest version of org-mode. Instructions to install org-mode can
+   be found [[http://orgmode.org/manual/Installation.html][here]].
+
+#+BEGIN_SRC sh
+cd ~/.emacs.d/lisp
+git clone git://orgmode.org/org-mode.git
+cd org-mode
+make autoloads
+#+END_SRC
+
+
+
 ** dotfiles
    Here I will briefly describe how the scripts work. Bootstraping the dotfiles
    is inspired from [[https://github.com/holman/dotfiles][holman does dotfiles]]. I have added a couple more scripts to
@@ -48,8 +96,16 @@ script/bootstrap
    loads the rest of the Emacs initialization from Emacs lisp embedded in
    literate org-mode files.
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
+;;; -*- Mode: Emacs-Lisp -*-
+
+;;; init.el --- Where all the magic begins
+;;
+;; This file loads Org-mode and then loads the rest of our Emacs initialization from Emacs lisp
+;; embedded in literate Org-mode files.
+
 ;; Load up Org Mode and (now included) Org Babel for elisp embedded in Org Mode files
+(add-to-list 'load-path "~/.emacs.d/lisp/org-mode/lisp")
 (setq load-path (cons "~/.emacs.d/lisp/org-mode/contrib/lisp" load-path))
 (require 'package)
 (package-initialize)
@@ -67,6 +123,7 @@ script/bootstrap
        (load-path (append (list org-dir org-contrib-dir)
                           (or load-path nil))))
   ;; load up Org-mode and Org-babel
+  (require 'org)
   (require 'org-install)
   (require 'ob-tangle))
 
@@ -75,7 +132,9 @@ script/bootstrap
 (dolist (orgfile (directory-files dotfiles-dir t "\\.org$"))
   (org-babel-load-file (file-truename orgfile)))
 
+
 ;;; init.el ends here
+
 #+end_src
 
    Currently, I'm using only one literate org-mode file, conveniently called
