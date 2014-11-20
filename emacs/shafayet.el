@@ -1,4 +1,3 @@
-
 (require 'cl)
 
 ;;; melpa, marmalade
@@ -41,6 +40,7 @@
         powerline
         org-bullets
         color-theme-sanityinc-tomorrow
+        linum-relative
         ) "A list of packages to ensure are installed at launch.")
 
 
@@ -62,6 +62,16 @@
       (package-install p))))
 
 (mapc 'require shafayet-packages)
+
+(fringe-mode '(8 . 0))
+
+(add-hook 'prog-mode-hook 'linum-mode)
+
+(defun fix-linum-size ()
+  (interactive)
+  (set-face-attribute 'linum nil :height 110))
+
+(add-hook 'linum-mode-hook 'fix-linum-size)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -463,8 +473,7 @@ mouse-3: go to end")
 
 
 
-;; Enable Line Numbers
-;(global-linum-mode t)
+
 
 ;; Add Space Next to Line Numbers
 ;; (unless window-system
@@ -634,6 +643,17 @@ mouse-3: go to end")
   (setq c-basic-offset 4)
   (c-set-offset 'substatement-open 0))
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+
+(defun linum-off-mode ()
+  "Toggles the line numbers as well as the fringe. This allows me
+to maximize the screen estate."
+  (interactive)
+  (if linum-mode
+      (progn
+         (fringe-mode '(0 . 0))
+        (linum-mode -1))
+    (fringe-mode '(8 . 0))
+    (linum-mode 1)))
 
 (defun unfill-paragraph ()
   (interactive)

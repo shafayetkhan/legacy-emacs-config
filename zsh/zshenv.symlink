@@ -1,5 +1,7 @@
 #!/usr/local/bin/zsh
 
+# Inspired from: https://github.com/howardabrams/dot-files/blob/master/zsh-env.org
+
 # Environment Variables
 
 #   Path to the [[https://github.com/robbyrussell/oh-my-zsh][Oh My Zsh]] configuration.
@@ -9,7 +11,7 @@ ZSH=$HOME/.oh-my-zsh
 # Use my own [[file:zsh-theme.org][Happiness Zsh theme]] (stored in the =~/.oh-my-zsh/themes=
 #   directory.
 
-ZSH_THEME="happiness"
+#ZSH_THEME="happiness"
 
 # Disable autosetting terminal title.
 

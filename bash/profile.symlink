@@ -1,16 +1,3 @@
-#1 Install Xcode
-#2 Install Command Line Tools from Xcode -> Preferences -> Downloads
-#3 Install homebrew -> http://brew.sh/ | brew doctor | brew update
-#4 brew install python
-#5 brew install git
-#6 brew install bazaar | brew install emacs --HEAD --cocoa --srgb
-#7 ln -s /usr/local/Cellar/emacs/24.3/Emacs.app /Applications
-#8 alias emacs="/usr/local/Cellar/emacs/24.3/Emacs.app/Contents/MacOS/Emacs -nw"
-#9 pip install virtualenv
-#10 pip install virtualenvwrapper
-##For emacs spell heck install aspell as below
-#11 brew install aspell --all
-
 # Virtualenv and Virtualenvwrapper configs
 export WORKON_HOME=$HOME/.virtualenvs
 export PROJECT_HOME=$HOME/Dev/Python
@@ -49,18 +36,9 @@ export PATH="/usr/local/heroku/bin:$PATH"
 ### Postgresql
 export PATH="/Applications/Postgres93.app/Contents/MacOs/bin:$PATH"
 
-# Emacs
-# Create a file called xemacs in /usr/local/Cellar/emacs/HEAD/bin/
-# This way, xemacs will launch emacs gui and emacs will launch emacs in terminal
-# #!/bin/bash
-# /Applications/Emacs.app/Contents/MacOS/Emacs "$@"
-
-export PATH="/usr/local/Cellar/emacs/HEAD/bin:$PATH"
-alias ec='/usr/local/Cellar/emacs/HEAD/bin/emacsclient'
+export PATH="/usr/local/Cellar/emacs/24.3/bin:$PATH"
+alias ec='/usr/local/Cellar/emacs/24.3/bin/emacsclient'
 
 
 # Set Bash History to 32768
 export HISTSIZE=32768
-
-# Set PYTHONPATH
-export PYTHONPATH="/Users/shafayet/Dev/Python:$PYTHONPATH:$PATH"

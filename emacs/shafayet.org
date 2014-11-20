@@ -17,13 +17,14 @@
   emacs configuration and other dot files, you might be interested in this
   repository.
 
-** Basic housekeeping
-   Switch default shell to zsh. Use config from OH MY ZSH. Install XCode command
-   line tools.
-
+** Housekeeping
+   Switch default shell to zsh. Use config from OH MY ZSH.
 #+BEGIN_SRC sh
-chsh -s /bin/zsh
 curl -L https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh | sh
+#+END_SRC
+
+   Install XCode command line tools.
+#+BEGIN_SRC sh
 xcode-select --install
 #+END_SRC
 
@@ -41,7 +42,6 @@ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/
    Helpful information available at:
    [[http://derjan.io/blog/2013/11/25/setup-mac-for-development/][Setup Mac OS X for development]]
 
-
 #+BEGIN_SRC sh
 # Remove older versions of emacs
 brew rm emacs
@@ -53,8 +53,19 @@ brew install emacs --HEAD --cocoa --srgb
 brew linkapps
 #+END_SRC
 
-   Install the latest version of org-mode. Instructions to install org-mode can
-   be found [[http://orgmode.org/manual/Installation.html][here]].
+   Create a file called xemacs in '/usr/local/Cellar/emacs/24.3/bin/' containing
+   the following:
+
+#+begin_src sh
+# #!/bin/bash
+# /Applications/Emacs.app/Contents/MacOS/Emacs "$@"
+#+end_src
+
+   This way, xemacs will launch emacs gui and emacs will launch emacs in terminal.
+
+   My emacs configuration loads org-mode from ~/.emacs.d/lisp. Install the
+   latest version of org-mode. Instructions to install org-mode can be found
+   [[http://orgmode.org/manual/Installation.html][here]].
 
 #+BEGIN_SRC sh
 cd ~/.emacs.d/lisp
@@ -63,6 +74,26 @@ cd org-mode
 make autoloads
 #+END_SRC
 
+   Optionally, install python, git, other tools using brew.
+
+#+BEGIN_SRC sh
+brew install python
+brew install git
+brew install bazar
+#+END_SRC
+
+   Install Virtualenv and Virtualenvwrapper configs for Python
+
+#+begin_src sh
+pip install virtualenv
+pip install virtualenvwrapper
+#+end_src
+
+   Install aspell for spell check.
+
+#+begin_src sh
+brew install aspell --all
+#+end_src
 
 
 ** dotfiles
@@ -83,9 +114,9 @@ script/bootstrap
    Dotfiles are files that start with a dot and are mainly used for storing
    configuration settings. The rules are simple: name the config file with the
    extension *.symlink* and the dotfile will be installed into the home folder
-   using the first part of the file until .symlink.
+   using the first part of the file preceding '.symlink'.
 
-   I like to use emacs as my text editor/terminal and so bootstrapping my emacs
+   I like to use emacs as my editor/terminal/OS and so bootstrapping my emacs
    config file using a sane method is important. I'm using org-babel's literate
    programming to comment and annotate useful information. I refer to this
    document when setting up my environment first.
@@ -208,6 +239,7 @@ script/bootstrap
         powerline
         org-bullets
         color-theme-sanityinc-tomorrow
+        linum-relative
         ) "A list of packages to ensure are installed at launch.")
 
 
@@ -233,6 +265,25 @@ script/bootstrap
 #+end_src
 
 * Preferences
+
+Fringes
+
+#+begin_src emacs-lisp :tangle yes
+(fringe-mode '(8 . 0))
+#+end_src
+
+Line Numbers
+
+#+begin_src emacs-lisp :tangle yes
+(add-hook 'prog-mode-hook 'linum-mode)
+
+(defun fix-linum-size ()
+  (interactive)
+  (set-face-attribute 'linum nil :height 110))
+
+(add-hook 'linum-mode-hook 'fix-linum-size)
+
+#+end_src
 
 #+begin_src emacs-lisp :tangle yes
 (custom-set-variables
@@ -709,8 +760,7 @@ mouse-3: go to end")
 
 
 
-;; Enable Line Numbers
-;(global-linum-mode t)
+
 
 ;; Add Space Next to Line Numbers
 ;; (unless window-system
@@ -928,6 +978,25 @@ mouse-3: go to end")
 
 
 * Custom Stuff
+
+Linum-off-mode
+
+#+begin_src emacs-lisp :tangle yes
+
+(defun linum-off-mode ()
+  "Toggles the line numbers as well as the fringe. This allows me
+to maximize the screen estate."
+  (interactive)
+  (if linum-mode
+      (progn
+         (fringe-mode '(0 . 0))
+        (linum-mode -1))
+    (fringe-mode '(8 . 0))
+    (linum-mode 1)))
+
+
+#+end_src
+
 
 Unfill Paragraph
 
