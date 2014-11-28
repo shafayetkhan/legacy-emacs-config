@@ -1,6 +1,7 @@
 (fringe-mode '(8 . 0))
 
 (add-hook 'prog-mode-hook 'linum-mode)
+(require 'linum-relative)
 
 (defun fix-linum-size ()
   (interactive)
@@ -244,6 +245,12 @@
 (global-set-key (kbd "C-x C-+") 'text-scale-increase)
 (global-set-key (kbd "C-x C--") 'text-scale-decrease)
 
+(defun inverse-filter (condp lst)
+  "A filter function, but returns a list of the entries that
+don't match the predicate."
+  (delq nil
+        (mapcar (lambda (x) (and (not (funcall condp x)) x)) lst)))
+
 (require 'cl)
 
 ;;; melpa, marmalade
@@ -254,19 +261,25 @@
                          ("marmalade" . "http://marmalade-repo.org/packages/")))
 
 (package-initialize)
+(package-refresh-contents)
 
-;; http://stackoverflow.com/questions/10092322/how-to-automatically-install-emacs-packages-by-specifying-a-list-of-package-name
+(defun packages-install (packages)
+  "Given a list of packages, this will install them from the standard locations."
+  (let ((to-install (inverse-filter 'package-installed-p packages)))
+    (when to-install
+      (package-refresh-contents)
+      (dolist (it to-install)
+          (package-install it)
+      (delete-other-windows)))))
 
-(defvar shafayet-packages
+
+
+
+(defvar default-packages
       '(
-        org
-        python-mode
-        virtualenvwrapper
         flymake-easy
-        flymake-python-pyflakes
         smooth-scroll
-        js2-mode
-        exec-path-from-shell
+        color-identifiers-mode
         ace-jump-mode
         expand-region
         web-mode
@@ -289,25 +302,8 @@
         linum-relative
         ) "A list of packages to ensure are installed at launch.")
 
-
-(setq url-http-attempt-keepalives nil)
-
-(defun packages-installed-p ()
-  (loop for p in shafayet-packages
-        when (not (package-installed-p p)) do (return nil)
-        finally (return t)))
-
-(unless (packages-installed-p)
-  ;; check for new packages (package versions)
-  (message "%s" "Emacs is now refreshing its package database...")
-  (package-refresh-contents)
-  (message "%s" " done.")
-  ;; install the missing packages
-  (dolist (p shafayet-packages)
-    (when (not (package-installed-p p))
-      (package-install p))))
-
-(mapc 'require shafayet-packages)
+(packages-install default-packages)
+(mapc 'require default-packages)
 
 (eval-after-load "org"
   '(require 'ox-md nil t))
@@ -333,11 +329,14 @@
 ;; Set a password
 (setq org-mobile-encryption-password "shafayet")
 
-(yas-global-mode 1)
-;(yas-load-directory "~/.emacs.d/snippets")
-(add-hook 'term-mode-hook (lambda()
-    (setq yas-dont-activate t)))
+(add-hook 'after-init-hook 'global-color-identifiers-mode)
 
+(add-to-list 'load-path
+              "~/.emacs.d/plugins/yasnippet")
+(require 'yasnippet)
+(yas-global-mode 1)
+
+(require 'ace-jump-mode)
 ;; ace jump mode major function
 (autoload
   'ace-jump-mode
@@ -358,6 +357,7 @@
   '(ace-jump-mode-enable-mark-sync))
 (define-key global-map (kbd "C-x SPC") 'ace-jump-mode-pop-mark)
 
+(require 'multiple-cursors)
 (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
 (global-set-key (kbd "C->") 'mc/mark-next-like-this)
 (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
@@ -377,6 +377,7 @@
 
 ;;; ** Magit
 ;; Magit Keybindings
+(require 'magit)
 (define-key global-map (kbd "C-c g s") 'magit-status)
 (define-key global-map (kbd "C-c g p") 'magit-pull)
 (define-key global-map (kbd "C-c g b") 'magit-blame-mode)
@@ -564,12 +565,96 @@ mouse-3: go to end")
 
 (powerline-ha-theme)
 
+(packages-install
+               '(python-mode
+                 virtualenvwrapper
+                 flymake-python-pyflakes
+                 yasnippet))
+
 ;; Python Mode Settings
 (require 'python-mode)
 (add-to-list 'auto-mode-alist '("\\.py$" . python-mode))
 (setq py-electric-colon-active t)
 (add-hook 'python-mode-hook 'autopair-mode)
 (add-hook 'python-mode-hook 'yas-minor-mode)
+
+(packages-install '( js-comint
+                     js2-mode
+                     ac-js2
+                     js2-refactor
+                     json-mode
+                     coffee-mode ))
+
+(require 'js2-mode)
+(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+
+(setq js-basic-indent 2)
+(setq-default js2-basic-indent 2)
+
+(setq-default js2-basic-offset 2)
+(setq-default js2-auto-indent-p t)
+(setq-default js2-cleanup-whitespace t)
+(setq-default js2-enter-indents-newline t)
+(setq-default js2-global-externs "jQuery $")
+(setq-default js2-indent-on-enter-key t)
+(setq-default js2-mode-indent-ignore-first-tab t)
+(setq-default js2-global-externs '("module" "require" "buster" "sinon" "assert" "refute" "setTimeout" "clearTimeout" "setInterval" "clearInterval" "location" "__dirname" "console" "JSON"))
+; We'll let fly do the error parsing...
+(setq-default js2-show-parse-errors nil)
+; (autoload 'js2-mode "js2-mode" nil t)
+
+(font-lock-add-keywords
+ 'js2-mode `(("\\(function *\\)("
+             (0 (progn (compose-region (match-beginning 1) (match-end 1) "ƒ")
+                       nil)))))
+
+(font-lock-add-keywords 'js2-mode
+                        '(("\\<\\(FIX\\|TODO\\|FIXME\\|HACK\\|REFACTOR\\):"
+                           1 font-lock-warning-face t)))
+
+(add-hook 'js2-mode-hook 'color-identifiers-mode)
+
+(when (require 'js2-refactor nil t)
+      (js2r-add-keybindings-with-prefix "C-c C-m"))
+
+(autoload 'js-comint "js-comint"
+  "Hooking JavaScript interpreter up to the JS Files." t nil)
+
+(setenv "NODE_NO_READLINE" "1")   ;; Turn off fancy node prompt
+;; Use node as our repl
+(setq inferior-js-program-command "node")
+
+(setq inferior-js-mode-hook
+      (lambda ()
+        ;; We like nice colors
+        (ansi-color-for-comint-mode-on)
+        ;; Deal with some prompt nonsense
+        (add-to-list
+         'comint-preoutput-filter-functions
+         (lambda (output)
+           (replace-regexp-in-string "\033\\[[0-9]+[GK]" "" output)
+           (replace-regexp-in-string ".*1G.*3G" "&GT;" output)
+           (replace-regexp-in-string "&GT;" "> " output)))))
+
+(defun my/js-keybindings ()
+  (interactive)
+  (local-set-key (kbd "C-c C-c") 'js-send-buffer)
+  (local-set-key (kbd "C-c C-r") 'js-send-region)
+  (local-set-key (kbd "C-c C-s") 'js-send-last-sexp)
+  (local-set-key (kbd "C-c C-z") 'run-js))
+
+(add-hook 'js-mode-hook 'my/js-keybindings)
+(add-hook 'js2-mode-hook 'my/js-keybindings)
+
+(add-hook 'after-init-hook
+  #'(lambda ()
+    (when (locate-library "slime-js")
+      (require 'setup-slime-js))))
+
+(when (require 'coffee-mode nil t)
+  (let ((my-coffee-command (concat (getenv "HOME") "/bin/coughy")))
+    (if (file-exists-p my-coffee-command)
+        (setq coffee-command my-coffee-command))))
 
 ;; Web-Mode Settings
 (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
@@ -589,10 +674,6 @@ mouse-3: go to end")
   (setq web-mode-enable-current-element-highlight t)
 )
 (add-hook 'web-mode-hook  'web-mode-hook)
-
-;;  js2-mode Settings
-(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
-(add-to-list 'auto-mode-alist '("\\.json$" . js2-mode))
 
 (defun my-c-mode-common-hook ()
   (setq c-basic-offset 4)
