@@ -32,6 +32,4 @@
 ;; file-truename: https://www.gnu.org/software/emacs/manual/html_node/elisp/Truenames.html
 (dolist (orgfile (directory-files dotfiles-dir t "\\.org$"))
   (org-babel-load-file (file-truename orgfile)))
-
-
 ;;; init.el ends here

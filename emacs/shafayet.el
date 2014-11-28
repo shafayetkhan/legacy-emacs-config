@@ -1,68 +1,3 @@
-(require 'cl)
-
-;;; melpa, marmalade
-(require 'package)
-(setq package-archives '(("org"       . "http://orgmode.org/elpa/")
-                         ("gnu"       . "http://elpa.gnu.org/packages/")
-                         ("melpa"     . "http://melpa.milkbox.net/packages/")
-                         ("marmalade" . "http://marmalade-repo.org/packages/")))
-
-(package-initialize)
-
-;; http://stackoverflow.com/questions/10092322/how-to-automatically-install-emacs-packages-by-specifying-a-list-of-package-name
-
-(defvar shafayet-packages
-      '(
-        org
-        python-mode
-        virtualenvwrapper
-        flymake-easy
-        flymake-python-pyflakes
-        smooth-scroll
-        js2-mode
-        exec-path-from-shell
-        ace-jump-mode
-        expand-region
-        web-mode
-        magit
-        color-theme
-        yasnippet
-        ;monokai-theme
-        jedi
-        auto-complete
-        autopair
-        multiple-cursors
-        smex
-        ido-ubiquitous
-        ido-vertical-mode
-        rainbow-delimiters
-        visual-regexp
-        powerline
-        org-bullets
-        color-theme-sanityinc-tomorrow
-        linum-relative
-        ) "A list of packages to ensure are installed at launch.")
-
-
-(setq url-http-attempt-keepalives nil)
-
-(defun packages-installed-p ()
-  (loop for p in shafayet-packages
-        when (not (package-installed-p p)) do (return nil)
-        finally (return t)))
-
-(unless (packages-installed-p)
-  ;; check for new packages (package versions)
-  (message "%s" "Emacs is now refreshing its package database...")
-  (package-refresh-contents)
-  (message "%s" " done.")
-  ;; install the missing packages
-  (dolist (p shafayet-packages)
-    (when (not (package-installed-p p))
-      (package-install p))))
-
-(mapc 'require shafayet-packages)
-
 (fringe-mode '(8 . 0))
 
 (add-hook 'prog-mode-hook 'linum-mode)
@@ -113,7 +48,6 @@
 
 (setq initial-scratch-message "") ;; Uh, I know what Scratch is for
 (setq visible-bell t)             ;; Get rid of the beeps
-
 
 ;;; To Enable In All Buffers
 (autopair-global-mode)
@@ -212,14 +146,197 @@
 ;;; Skip the Startup Message
 (setq inhibit-startup-message t)
 
+;; Change Cursor Style
+;(setq-default cursor-type 'bar)
+(blink-cursor-mode 0)
+; highlight the region whenever it is active
+(transient-mark-mode t)
+; highlight region by regexp
+(global-hi-lock-mode t)
+;; Use Colors To Highlight Commands, Etc.
+(global-font-lock-mode t)
+(setq font-lock-maximum-decoration t)
+
+;; Add Space Next to Line Numbers
+;; (unless window-system
+;;   (setq linum-format "%d "))
+
+;; Enable Column Numbers
+(setq column-number-mode t)
+
+;;; Highlight Current Line
+(global-hl-line-mode +1)
+
+;;; Use Shift To Move Around Windows
+;(windmove-default-keybindings 'shift)
+
+;;; Highlight parentheses when the cursor is next to them
+(require 'paren)
+(show-paren-mode t)
+
+;;; color-themes
+;; Almost-monokai theme - Download from https://github.com/lut4rp/almost-monokai
+;(load-file "~/.emacs.d/themes/color-theme-almost-monokai.el")
+;(color-theme-almost-monokai)
+
+;; color-theme-sanityinc-tomorrow
+;;https://github.com/purcell/color-theme-sanityinc-tomorrow
+(require 'color-theme-sanityinc-tomorrow)
+(load-theme 'sanityinc-tomorrow-night t)
+
+;; Org-mode source code blocks
+(defun org-src-color-blocks-light ()
+  "Colors the block headers and footers to make them stand out more for lighter themes"
+  (interactive)
+  (custom-set-faces
+   '(org-block-begin-line
+    ((t (:underline "#A7A6AA" :foreground "#008ED1" :background "#EAEAFF"))))
+   '(org-block-background
+     ((t (:background "#FFFFEA"))))
+   '(org-block-end-line
+     ((t (:overline "#A7A6AA" :foreground "#008ED1" :background "#EAEAFF"))))
+
+   '(mode-line-buffer-id ((t (:foreground "#005000" :bold t))))
+   '(which-func ((t (:foreground "#008000")))))
+
+   ;; Looks like the minibuffer issues are only for v23
+   ; (set-face-foreground 'minibuffer "black")
+   ; (set-face-foreground 'minibuffer-prompt "red")
+)
+
+(defun org-src-color-blocks-dark ()
+  "Colors the block headers and footers to make them stand out more for dark themes"
+  (interactive)
+  (custom-set-faces
+   '(org-block-begin-line
+     ((t (:foreground "#008ED1" :background "#002E41"))))
+   '(org-block-background
+     ((t (:background "#111111"))))
+   '(org-block-end-line
+     ((t (:foreground "#008ED1" :background "#002E41"))))
+
+   '(mode-line-buffer-id ((t (:foreground "black" :bold t))))
+   '(which-func ((t (:foreground "green")))))
+
+   ;; Looks like the minibuffer issues are only for v23
+   ; (set-face-foreground 'minibuffer "white")
+   ; (set-face-foreground 'minibuffer-prompt "white")
+)
+
+(add-hook 'org-mode-hook 'org-src-color-blocks-dark)
+
+
+;;; ** Fonts
+;; Font size
+
+;; Specify the default font as =Source Code Pro=, which should already
+;;    be [[http://blogs.adobe.com/typblography/2012/09/source-code-pro.html][downloaded]] and installed.
+
+;; =Source Code Pro= is also available in Google Fonts according to this
+;; discussion: http://askubuntu.com/questions/193072/how-to-use-the-new-adobe-source-code-pro-font
+
+
+(when (window-system)
+  (set-frame-font "Source Code Pro")
+  (set-face-attribute 'default nil :font "Source Code Pro" :height 140)
+  (set-face-font 'default "Source Code Pro"))
+
+(global-set-key (kbd "C-x C-+") 'text-scale-increase)
+(global-set-key (kbd "C-x C--") 'text-scale-decrease)
+
+(require 'cl)
+
+;;; melpa, marmalade
+(require 'package)
+(setq package-archives '(("org"       . "http://orgmode.org/elpa/")
+                         ("gnu"       . "http://elpa.gnu.org/packages/")
+                         ("melpa"     . "http://melpa.milkbox.net/packages/")
+                         ("marmalade" . "http://marmalade-repo.org/packages/")))
+
+(package-initialize)
+
+;; http://stackoverflow.com/questions/10092322/how-to-automatically-install-emacs-packages-by-specifying-a-list-of-package-name
+
+(defvar shafayet-packages
+      '(
+        org
+        python-mode
+        virtualenvwrapper
+        flymake-easy
+        flymake-python-pyflakes
+        smooth-scroll
+        js2-mode
+        exec-path-from-shell
+        ace-jump-mode
+        expand-region
+        web-mode
+        magit
+        color-theme
+        yasnippet
+        ;monokai-theme
+        jedi
+        auto-complete
+        autopair
+        multiple-cursors
+        smex
+        ido-ubiquitous
+        ido-vertical-mode
+        rainbow-delimiters
+        visual-regexp
+        powerline
+        org-bullets
+        color-theme-sanityinc-tomorrow
+        linum-relative
+        ) "A list of packages to ensure are installed at launch.")
+
+
+(setq url-http-attempt-keepalives nil)
+
+(defun packages-installed-p ()
+  (loop for p in shafayet-packages
+        when (not (package-installed-p p)) do (return nil)
+        finally (return t)))
+
+(unless (packages-installed-p)
+  ;; check for new packages (package versions)
+  (message "%s" "Emacs is now refreshing its package database...")
+  (package-refresh-contents)
+  (message "%s" " done.")
+  ;; install the missing packages
+  (dolist (p shafayet-packages)
+    (when (not (package-installed-p p))
+      (package-install p))))
+
+(mapc 'require shafayet-packages)
+
+(eval-after-load "org"
+  '(require 'ox-md nil t))
+
+;;; Orgstruct minor mode
+;(add-hook 'emacs-lisp-mode-hook 'turn-on-orgstruct)
+(add-hook 'emacs-lisp-mode-hook 'turn-on-orgstruct++)
+;(add-hook 'emacs-lisp-mode-hook 'turn-on-orgtbl)
+
+;;; Org-mode (Easier on the eyes)
+;;(setq org-startup-indented t)
+(setq org-hide-leading-stars t)
+(setq org-columns-content t)
+(setq org-align-all-tags t)
+
+;;; mobileorg setup
+(setq org-directory "~/Dev/org")
+(setq org-mobile-directory "~/Dropbox/Apps/MobileOrg")
+(setq org-agenda-files (quote ("~/Dev/org/agenda.org")))
+(setq org-mobile-inbox-for-pull "~/Dev/org/mobileorg-inbox.org")
+;; Enable encryption
+(setq org-mobile-use-encryption t)
+;; Set a password
+(setq org-mobile-encryption-password "shafayet")
+
 (yas-global-mode 1)
 ;(yas-load-directory "~/.emacs.d/snippets")
 (add-hook 'term-mode-hook (lambda()
     (setq yas-dont-activate t)))
-
-;;; ** exec-path-from-shell
-(when (memq window-system '(mac ns))
-  (exec-path-from-shell-initialize))
 
 ;; ace jump mode major function
 (autoload
@@ -446,168 +563,6 @@ mouse-3: go to end")
                       (powerline-render rhs)))))))
 
 (powerline-ha-theme)
-
-;; Toggle Fullscreen
-;; Does not work
-;; (defun toggle-fullscreen ()
-;;   "Toggle full screen on X11"
-;;   (interactive)
-;;   (when (eq window-system 'x)
-;;     (set-frame-parameter
-;;      nil 'fullscreen
-;;      (when (not (frame-parameter nil 'fullscreen)) 'fullboth))))
-
-;; (global-set-key [f11] 'toggle-fullscreen)
-
-;; Change Cursor Style
-;(setq-default cursor-type 'bar)
-(blink-cursor-mode 0)
-; highlight the region whenever it is active
-(transient-mark-mode t)
-; highlight region by regexp
-(global-hi-lock-mode t)
-
-;; Use Colors To Highlight Commands, Etc.
-(global-font-lock-mode t)
-(setq font-lock-maximum-decoration t)
-
-
-
-
-
-;; Add Space Next to Line Numbers
-;; (unless window-system
-;;   (setq linum-format "%d "))
-
-;; Enable Column Numbers
-(setq column-number-mode t)
-
-
-;;; Highlight Current Line
-(global-hl-line-mode +1)
-
-;;; Use Shift To Move Around Windows
-;(windmove-default-keybindings 'shift)
-
-;;; Highlight parentheses when the cursor is next to them
-(require 'paren)
-(show-paren-mode t)
-
-;;; * Themes
-;;; ** color-themes
-;; Almost-monokai theme - Download from https://github.com/lut4rp/almost-monokai
-;(load-file "~/.emacs.d/themes/color-theme-almost-monokai.el")
-;(color-theme-almost-monokai)
-
-;; color-theme-sanityinc-tomorrow
-;;https://github.com/purcell/color-theme-sanityinc-tomorrow
-(require 'color-theme-sanityinc-tomorrow)
-(load-theme 'sanityinc-tomorrow-night t)
-
-
-;; Org-mode source code blocks
-(defun org-src-color-blocks-light ()
-  "Colors the block headers and footers to make them stand out more for lighter themes"
-  (interactive)
-  (custom-set-faces
-   '(org-block-begin-line
-    ((t (:underline "#A7A6AA" :foreground "#008ED1" :background "#EAEAFF"))))
-   '(org-block-background
-     ((t (:background "#FFFFEA"))))
-   '(org-block-end-line
-     ((t (:overline "#A7A6AA" :foreground "#008ED1" :background "#EAEAFF"))))
-
-   '(mode-line-buffer-id ((t (:foreground "#005000" :bold t))))
-   '(which-func ((t (:foreground "#008000")))))
-
-   ;; Looks like the minibuffer issues are only for v23
-   ; (set-face-foreground 'minibuffer "black")
-   ; (set-face-foreground 'minibuffer-prompt "red")
-)
-
-(defun org-src-color-blocks-dark ()
-  "Colors the block headers and footers to make them stand out more for dark themes"
-  (interactive)
-  (custom-set-faces
-   '(org-block-begin-line
-     ((t (:foreground "#008ED1" :background "#002E41"))))
-   '(org-block-background
-     ((t (:background "#111111"))))
-   '(org-block-end-line
-     ((t (:foreground "#008ED1" :background "#002E41"))))
-
-   '(mode-line-buffer-id ((t (:foreground "black" :bold t))))
-   '(which-func ((t (:foreground "green")))))
-
-   ;; Looks like the minibuffer issues are only for v23
-   ; (set-face-foreground 'minibuffer "white")
-   ; (set-face-foreground 'minibuffer-prompt "white")
-)
-
-(add-hook 'org-mode-hook 'org-src-color-blocks-dark)
-
-
-;;; ** Fonts
-;; Font size
-
-;; Specify the default font as =Source Code Pro=, which should already
-;;    be [[http://blogs.adobe.com/typblography/2012/09/source-code-pro.html][downloaded]] and installed.
-
-;; =Source Code Pro= is also available in Google Fonts according to this
-;; discussion: http://askubuntu.com/questions/193072/how-to-use-the-new-adobe-source-code-pro-font
-
-
-(when (window-system)
-  (set-frame-font "Source Code Pro")
-  (set-face-attribute 'default nil :font "Source Code Pro" :height 140)
-  (set-face-font 'default "Source Code Pro"))
-
-(global-set-key (kbd "C-x C-+") 'text-scale-increase)
-(global-set-key (kbd "C-x C--") 'text-scale-decrease)
-
-
-
-;;; ** custom-set-faces
-;;; Background - #1f2019 is nice but not compatible with xterm.
-;; (custom-set-faces
-;;  ;; custom-set-faces was added by Custom.
-;;  ;; If you edit it by hand, you could mess it up, so be careful.
-;;  ;; Your init file should contain only one such instance.
-;;  ;; If there is more than one, they won't work right.
-;;  '(default ((t (:inherit nil :stipple nil :background "gray12" :foreground "#F8F8F2" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 150 :width normal :foundry "apple" :family "Inconsolata"))))
-;;  '(hl-line ((t (:background "gray20"))))
-;;  '(linum ((t (:background "gray12" :foreground "white"))))
-;;  '(minibuffer-prompt ((t (:foreground "green"))))
-;;  '(region ((t (:background "#6DC5F1"))))
-;;  '(show-paren-match ((t (:background "SteelBlue1" :foreground "gray100"))))
-;;  '(show-paren-mismatch ((((class color)) (:background "red" :foreground "white"))))
-;;  '(web-mode-html-attr-name-face ((t (:foreground "#7fe22e"))))
-;;  '(web-mode-html-attr-value-face ((t (:foreground "#E6DB74"))))
-;;  '(web-mode-html-tag-face ((t (:foreground "#f92672")))))
-
-(eval-after-load "org"
-  '(require 'ox-md nil t))
-
-;;; Orgstruct minor mode
-;(add-hook 'emacs-lisp-mode-hook 'turn-on-orgstruct)
-(add-hook 'emacs-lisp-mode-hook 'turn-on-orgstruct++)
-;(add-hook 'emacs-lisp-mode-hook 'turn-on-orgtbl)
-
-;;; Org-mode (Easier on the eyes)
-;;(setq org-startup-indented t)
-(setq org-hide-leading-stars t)
-(setq org-columns-content t)
-(setq org-align-all-tags t)
-
-;;; mobileorg setup
-(setq org-directory "~/Dev/org")
-(setq org-mobile-directory "~/Dropbox/Apps/MobileOrg")
-(setq org-agenda-files (quote ("~/Dev/org/agenda.org")))
-(setq org-mobile-inbox-for-pull "~/Dev/org/mobileorg-inbox.org")
-;; Enable encryption
-(setq org-mobile-use-encryption t)
-;; Set a password
-(setq org-mobile-encryption-password "shafayet")
 
 ;; Python Mode Settings
 (require 'python-mode)
