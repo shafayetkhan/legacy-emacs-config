@@ -9,19 +9,19 @@
 
 (add-hook 'linum-mode-hook 'fix-linum-size)
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-enabled-themes (quote (sanityinc-tomorrow-night)))
- '(custom-safe-themes
-   (quote
-    ("06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" "4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
- '(org-export-backends (quote (ascii html icalendar latex odt)))
- '(orgstruct-heading-prefix-regexp "^;;; +"))
+;; (custom-set-variables
+;;  custom-set-variables was added by Custom.
+;;  If you edit it by hand, you could mess it up, so be careful.
+;;  Your init file should contain only one such instance.
+;;  If there is more than one, they won't work right.
+;;  '(custom-enabled-themes (quote (sanityinc-tomorrow-night)))
+;;  '(custom-safe-themes
+;;    (quote
+;;     ("06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" "4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
+;;  '(org-export-backends (quote (ascii html icalendar latex odt)))
+;;  '(orgstruct-heading-prefix-regexp "^;;; +"))
 
-;;Split windows vertically by default
+;; Split windows vertically by default
 ;; (custom-set-variables
 ;;  ;; custom-set-variables was added by Custom.
 ;;  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -300,6 +300,7 @@ don't match the predicate."
         org-bullets
         color-theme-sanityinc-tomorrow
         linum-relative
+        projectile
         ) "A list of packages to ensure are installed at launch.")
 
 (packages-install default-packages)
@@ -328,6 +329,14 @@ don't match the predicate."
 (setq org-mobile-use-encryption t)
 ;; Set a password
 (setq org-mobile-encryption-password "shafayet")
+
+(setq org-src-fontify-natively t)
+
+(add-hook 'org-mode-hook (lambda()
+                           (set (make-local-variable 'electric-indent-functions)
+                                (list (lambda(arg) 'no-indent)))))
+
+(projectile-global-mode)
 
 (add-hook 'after-init-hook 'global-color-identifiers-mode)
 
