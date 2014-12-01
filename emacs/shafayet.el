@@ -1,3 +1,4 @@
+
 (fringe-mode '(8 . 0))
 
 (add-hook 'prog-mode-hook 'linum-mode)
@@ -577,8 +578,7 @@ mouse-3: go to end")
 (packages-install
                '(python-mode
                  virtualenvwrapper
-                 flymake-python-pyflakes
-                 yasnippet))
+                 flymake-python-pyflakes))
 
 ;; Python Mode Settings
 (require 'python-mode)

@@ -882,8 +882,7 @@ $ git clone --recursive https://github.com/capitaomorte/yasnippet
 (packages-install
                '(python-mode
                  virtualenvwrapper
-                 flymake-python-pyflakes
-                 yasnippet))
+                 flymake-python-pyflakes))
 
 ;; Python Mode Settings
 (require 'python-mode)
