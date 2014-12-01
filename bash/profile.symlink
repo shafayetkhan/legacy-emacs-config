@@ -1,7 +1,6 @@
 # Virtualenv and Virtualenvwrapper configs
 export WORKON_HOME=$HOME/.virtualenvs
 export PROJECT_HOME=$HOME/Dev/Python
-
 export PATH=/usr/local/bin:$PATH
 #export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python
 #export VIRTUALENVWRAPPER_VIRTUALENV=/usr/local/bin/virtualenv
@@ -78,3 +77,7 @@ alias more=less
 
 # Take advantage of 256 color mode
 export TERM=xterm-256color
+
+# MacPorts Installer addition on 2014-11-24_at_12:22:49: adding an appropriate PATH variable for use with MacPorts.
+export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
+# Finished adapting your PATH environment variable for use with MacPorts.
