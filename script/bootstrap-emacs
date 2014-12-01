@@ -9,7 +9,7 @@ EMACS_DIR="$HOME/.emacs.d"
 echo $EMACS_DIR
 
 # Add all the directories to create
-EMACS_DIRS=( $EMACS_DIR "$EMACS_DIR/lisp" )
+EMACS_DIRS=( $EMACS_DIR "$EMACS_DIR/lisp" "$EMACS_DIR/plugins" )
 
 set -e
 
