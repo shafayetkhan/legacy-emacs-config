@@ -511,8 +511,14 @@ function (used by packages-install function)
 
 
 
-
 * Org
+
+ispell setup
+
+#+begin_src emacs-lisp :tangle yes
+(setq-default ispell-program-name "aspell")
+(setq flyspell-issue-welcome-flag nil)
+#+end_src
 
   Markdown export
 #+begin_src emacs-lisp :tangle yes
@@ -579,9 +585,7 @@ $ git clone --recursive https://github.com/capitaomorte/yasnippet
 
 
 #+begin_src emacs-lisp :tangle yes
-(add-to-list 'load-path
-              "~/.emacs.d/plugins/yasnippet")
-(require 'yasnippet)
+(add-to-list 'yas/root-directory "~/.emacs.d/plugins/yasnippet-snippets")
 (yas-global-mode 1)
 
 #+end_src
@@ -1128,6 +1132,24 @@ $ git clone --recursive https://github.com/capitaomorte/yasnippet
 #+end_src
 
 * Custom Stuff
+
+Copying lines without selecting them
+
+#+begin_src emacs-lisp :tangle yes
+(defadvice kill-ring-save (before slick-copy activate compile) "When called
+  interactively with no active region, copy a single line instead."
+  (interactive (if mark-active (list (region-beginning) (region-end)) (message
+  "Copied line") (list (line-beginning-position) (line-beginning-position
+  2)))))
+
+(defadvice kill-region (before slick-cut activate compile)
+  "When called interactively with no active region, kill a single line instead."
+  (interactive
+    (if mark-active (list (region-beginning) (region-end))
+      (list (line-beginning-position)
+        (line-beginning-position 2)))))
+
+#+end_src
 
 Linum-off-mode
 
