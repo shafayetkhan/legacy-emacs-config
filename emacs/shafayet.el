@@ -1,3 +1,6 @@
+(require 'cask "~/.cask/cask.el")
+(cask-initialize)
+
 (fringe-mode '(8 . 0))
 
 (add-hook 'prog-mode-hook 'linum-mode)
@@ -251,61 +254,6 @@ don't match the predicate."
   (delq nil
         (mapcar (lambda (x) (and (not (funcall condp x)) x)) lst)))
 
-(require 'cl)
-
-;;; melpa, marmalade
-(require 'package)
-(setq package-archives '(("org"       . "http://orgmode.org/elpa/")
-                         ("gnu"       . "http://elpa.gnu.org/packages/")
-                         ("melpa"     . "http://melpa.milkbox.net/packages/")
-                         ("marmalade" . "http://marmalade-repo.org/packages/")))
-
-(package-initialize)
-(package-refresh-contents)
-
-(defun packages-install (packages)
-  "Given a list of packages, this will install them from the standard locations."
-  (let ((to-install (inverse-filter 'package-installed-p packages)))
-    (when to-install
-      (package-refresh-contents)
-      (dolist (it to-install)
-          (package-install it)
-      (delete-other-windows)))))
-
-
-
-
-(defvar default-packages
-      '(
-        flymake-easy
-        smooth-scroll
-        color-identifiers-mode
-        ace-jump-mode
-        expand-region
-        web-mode
-        magit
-        color-theme
-        yasnippet
-        ;monokai-theme
-        jedi
-        auto-complete
-        autopair
-        multiple-cursors
-        smex
-        ido-ubiquitous
-        ido-vertical-mode
-        rainbow-delimiters
-        visual-regexp
-        powerline
-        org-bullets
-        color-theme-sanityinc-tomorrow
-        linum-relative
-        projectile
-        ) "A list of packages to ensure are installed at launch.")
-
-(packages-install default-packages)
-(mapc 'require default-packages)
-
 (setq-default ispell-program-name "aspell")
 (setq flyspell-issue-welcome-flag nil)
 
@@ -339,10 +287,15 @@ don't match the predicate."
                            (set (make-local-variable 'electric-indent-functions)
                                 (list (lambda(arg) 'no-indent)))))
 
+(require 'confluence)
+
 (projectile-global-mode)
 
 (add-hook 'after-init-hook 'global-color-identifiers-mode)
 
+(require 'yasnippet)
+;(require 'yasnippet "~/.emacs.d/.cask/24.4.1/elpa/yasnippet-20141117.327/yasnippet.el")
+;(yas/initiazlize)
 (add-to-list 'yas/root-directory "~/.emacs.d/plugins/yasnippet-snippets")
 (yas-global-mode 1)
 
@@ -575,10 +528,8 @@ mouse-3: go to end")
 
 (powerline-ha-theme)
 
-(packages-install
-               '(python-mode
-                 virtualenvwrapper
-                 flymake-python-pyflakes))
+(when (memq window-system '(mac ns))
+  (exec-path-from-shell-initialize))
 
 ;; Python Mode Settings
 (require 'python-mode)
@@ -586,13 +537,6 @@ mouse-3: go to end")
 (setq py-electric-colon-active t)
 (add-hook 'python-mode-hook 'autopair-mode)
 (add-hook 'python-mode-hook 'yas-minor-mode)
-
-(packages-install '( js-comint
-                     js2-mode
-                     ac-js2
-                     js2-refactor
-                     json-mode
-                     coffee-mode ))
 
 (require 'js2-mode)
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))

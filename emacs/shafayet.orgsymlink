@@ -172,6 +172,105 @@ script/bootstrap
    shafayet.org. However, I'm considering branching out my configuration file
    like [[https://github.com/howardabrams/dot-files][Howard Abrams]] does.
 
+* Packages
+
+  I'm using Cask to manage packages and other dependencies. In the past I had
+  used the conventional way of installing packages. A snippet of that code can
+  be found towards the end of this section. Don't worry, it's not tangled!
+
+** Cask
+   The first step is to install Cask.
+
+#+BEGIN_SRC sh :tangle no
+curl -fsSL https://raw.githubusercontent.com/cask/cask/master/go | python
+#+END_SRC
+
+   Next, add Cask to $PATH. I have this in my .profile.
+
+#+BEGIN_SRC sh :tangle no
+export PATH="$HOME/.cask/bin:$PATH"
+#+END_SRC
+
+   Change directory into ~/.emacs.d and run cask init
+
+#+BEGIN_SRC sh :tangle no
+cd ~/.emacs.d
+cask init
+#+END_SRC
+   Add all the dependencies in the Cask file and run cask.
+
+#+BEGIN_SRC sh :tangle no
+cask
+#+END_SRC
+
+
+#+begin_src emacs-lisp :tangle yes
+(require 'cask "~/.cask/cask.el")
+(cask-initialize)
+#+end_src
+
+
+
+  -- discontinued
+  Setup ELPA package sources
+#+begin_src emacs-lisp :tangle no
+(require 'cl)
+
+;;; melpa, marmalade
+(require 'package)
+(setq package-archives '(("org"       . "http://orgmode.org/elpa/")
+                         ("gnu"       . "http://elpa.gnu.org/packages/")
+                         ("melpa"     . "http://melpa.milkbox.net/packages/")
+                         ("marmalade" . "http://marmalade-repo.org/packages/")))
+
+(package-initialize)
+(package-refresh-contents)
+
+(defun packages-install (packages)
+  "Given a list of packages, this will install them from the standard locations."
+  (let ((to-install (inverse-filter 'package-installed-p packages)))
+    (when to-install
+      (package-refresh-contents)
+      (dolist (it to-install)
+          (package-install it)
+      (delete-other-windows)))))
+
+
+
+
+(defvar default-packages
+      '(
+        flymake-easy
+        smooth-scroll
+        color-identifiers-mode
+        ace-jump-mode
+        expand-region
+        web-mode
+        magit
+        color-theme
+        yasnippet
+        ;monokai-theme
+        jedi
+        auto-complete
+        autopair
+        multiple-cursors
+        smex
+        ido-ubiquitous
+        ido-vertical-mode
+        rainbow-delimiters
+        visual-regexp
+        powerline
+        org-bullets
+        color-theme-sanityinc-tomorrow
+        linum-relative
+        projectile
+        ) "A list of packages to ensure are installed at launch.")
+
+(packages-install default-packages)
+(mapc 'require default-packages)
+
+#+end_src
+
 * Preferences
 
 Fringes
@@ -447,66 +546,6 @@ function (used by packages-install function)
           (mapcar (lambda (x) (and (not (funcall condp x)) x)) lst)))
 #+end_src
 
-* Package
-  Setup ELPA package sources
-#+begin_src emacs-lisp :tangle yes
-(require 'cl)
-
-;;; melpa, marmalade
-(require 'package)
-(setq package-archives '(("org"       . "http://orgmode.org/elpa/")
-                         ("gnu"       . "http://elpa.gnu.org/packages/")
-                         ("melpa"     . "http://melpa.milkbox.net/packages/")
-                         ("marmalade" . "http://marmalade-repo.org/packages/")))
-
-(package-initialize)
-(package-refresh-contents)
-
-(defun packages-install (packages)
-  "Given a list of packages, this will install them from the standard locations."
-  (let ((to-install (inverse-filter 'package-installed-p packages)))
-    (when to-install
-      (package-refresh-contents)
-      (dolist (it to-install)
-          (package-install it)
-      (delete-other-windows)))))
-
-
-
-
-(defvar default-packages
-      '(
-        flymake-easy
-        smooth-scroll
-        color-identifiers-mode
-        ace-jump-mode
-        expand-region
-        web-mode
-        magit
-        color-theme
-        yasnippet
-        ;monokai-theme
-        jedi
-        auto-complete
-        autopair
-        multiple-cursors
-        smex
-        ido-ubiquitous
-        ido-vertical-mode
-        rainbow-delimiters
-        visual-regexp
-        powerline
-        org-bullets
-        color-theme-sanityinc-tomorrow
-        linum-relative
-        projectile
-        ) "A list of packages to ensure are installed at launch.")
-
-(packages-install default-packages)
-(mapc 'require default-packages)
-
-#+end_src
-
 
 
 
@@ -566,6 +605,12 @@ Fix for electric indent
 
 * Extensions
 
+** Confluence
+
+#+begin_src emacs-lisp :tangle yes
+(require 'confluence)
+#+end_src
+
 ** Projectile
    #+begin_src emacs-lisp :tangle yes
    (projectile-global-mode)
@@ -579,12 +624,15 @@ Fix for electric indent
 Clone this repository somewhere
 #+begin_sh
 $ cd ~/.emacs.d/plugins
-$ git clone --recursive https://github.com/capitaomorte/yasnippet
+$ git clone --recursive git@bitbucket.org:shafayetkhan/yasnippet-snippets.git
 #+end_sh
 
 
 
 #+begin_src emacs-lisp :tangle yes
+(require 'yasnippet)
+;(require 'yasnippet "~/.emacs.d/.cask/24.4.1/elpa/yasnippet-20141117.327/yasnippet.el")
+;(yas/initiazlize)
 (add-to-list 'yas/root-directory "~/.emacs.d/plugins/yasnippet-snippets")
 (yas-global-mode 1)
 
@@ -879,14 +927,24 @@ $ git clone --recursive https://github.com/capitaomorte/yasnippet
 
 #+end_src
 
+** exec-path-from-shell
+   Ever find that a command works in your shell, but not in Emacs?
+
+   This happens a lot on OS X, where an Emacs instance started from the GUI
+   inherits a default set of environment variables.
+
+   This library works solves this problem by copying important environment
+   variables from the user's shell: it works by asking your shell to print out
+   the variables of interest, then copying them into the Emacs environment.
+
+   #+begin_src emacs-lisp :tangle yes
+(when (memq window-system '(mac ns))
+  (exec-path-from-shell-initialize))
+   #+end_src
 * Environments
 ** Python-Mode
 
 #+begin_src emacs-lisp :tangle yes
-(packages-install
-               '(python-mode
-                 virtualenvwrapper
-                 flymake-python-pyflakes))
 
 ;; Python Mode Settings
 (require 'python-mode)
@@ -903,16 +961,6 @@ $ git clone --recursive https://github.com/capitaomorte/yasnippet
    - Syntax verification (with flycheck)
    - Interactive REPL
 
-   We use the following packages based on =js2-mode=:
-
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (packages-install '( js-comint
-                       js2-mode
-                       ac-js2
-                       js2-refactor
-                       json-mode
-                       coffee-mode ))
-#+END_SRC
 
    Why yes, it seems that the JavaScript mode has a special
    indentation setting. Go below?
