@@ -1,4 +1,4 @@
-#-*- mode: org -*-
+ja#-*- mode: org -*-
 #+TITLE:  Emacs Configuration File
 #+AUTHOR: Shafayet Khan
 #+EMAIL:  shafayetkhan@gmail.com
@@ -251,7 +251,6 @@ cask
         yasnippet
         ;monokai-theme
         jedi
-        auto-complete
         autopair
         multiple-cursors
         smex
@@ -303,14 +302,6 @@ Line Numbers
   ;;  '(org-export-backends (quote (ascii html icalendar latex odt)))
   ;;  '(orgstruct-heading-prefix-regexp "^;;; +"))
 
-  ;; Split windows vertically by default
-  ;; (custom-set-variables
-  ;;  ;; custom-set-variables was added by Custom.
-  ;;  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;;  ;; Your init file should contain only one such instance.
-  ;;  ;; If there is more than one, they won't work right.
-  ;;  '(split-height-threshold nil)
-  ;;  '(split-width-threshold 0))
 
 
   ;; Insert newlines if the point is at the end of the buffer
@@ -401,8 +392,8 @@ Line Numbers
   (setq-default fill-column 80)
 
   ;;; Enable Auto Fill Mode
-  (add-hook 'text-mode-hook 'turn-on-auto-fill)
-  (add-hook 'org-mode-hook 'turn-on-auto-fill)
+  ;(add-hook 'text-mode-hook 'turn-on-auto-fill)
+  ;(add-hook 'org-mode-hook 'turn-on-auto-fill)
 
   ;;; Delete Selection Mode - Awesome!
   (delete-selection-mode 1)
@@ -429,6 +420,12 @@ Line Numbers
   ;;; Skip the Startup Message
   (setq inhibit-startup-message t)
 
+#+end_src
+
+  Tramp hangs with zsh. Switch to bash after tramp loads.
+
+#+begin_src emacs-lisp :tangle yes
+(eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
 #+end_src
 
 * Visual Stuff
@@ -590,10 +587,6 @@ ispell setup
 
 #+end_src
 
-Syntax Highlighting for code in org-mode
-#+begin_src emacs-lisp :tangle yes
-(setq org-src-fontify-natively t)
-#+end_src
 
 Fix for electric indent
 
@@ -603,12 +596,67 @@ Fix for electric indent
                                 (list (lambda(arg) 'no-indent)))))
 #+end_src
 
+** The Tower of Babel
+
+   The trick to literate programming is in the [[http://orgmode.org/worg/org-contrib/babel/intro.html][Babel project]], which
+   allows org-mode to not only interpret source code blocks, but
+   evaluate them and tangle them out to a file.
+
+#+begin_src emacs-lisp :tangle yes
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((sh         . t)
+   (js         . t)
+   (emacs-lisp . t)
+   (perl       . t)
+   (scala      . t)
+   (clojure    . t)
+   (python     . t)
+   (dot        . t)
+   (css        . t)
+   (plantuml   . t)))
+#+end_src
+
+
+   It seems to automatically recognize the language used in a source
+   block, but if not, call =org-babel-lob-ingest= to add all the
+   languages from the code block into the list that Babel supports.
+   Keystroke: =C-c C-v i=.
+
+*** Just Evaluate It
+
+    I'm normally fine with having my code automatically evaluated.
+
+#+begin_src emacs-lisp :tangle yes
+  (setq org-confirm-babel-evaluate nil)
+#+end_src
+
+*** Font Coloring in Code Blocks
+
+#+begin_src emacs-lisp :tangle yes
+   ; (setq org-src-fontify-natively t)
+   (setq org-src-tab-acts-natively t)
+
+#+end_src
+
+
 * Extensions
 
+
+** Company
+
+
+#+begin_src emacs-lisp :tangle yes
+(require 'company)
+(require 'company-tern)
+(add-hook 'after-init-hook 'global-company-mode)
+(add-to-list 'company-backends 'company-tern)
+#+end_src
 ** Confluence
 
 #+begin_src emacs-lisp :tangle yes
 (require 'confluence)
+(setq confluence-url "https://layer3tv.atlassian.net/")
 #+end_src
 
 ** Projectile
@@ -638,6 +686,19 @@ $ git clone --recursive git@bitbucket.org:shafayetkhan/yasnippet-snippets.git
 
 #+end_src
 
+
+#+end_src
+
+** Flycheck
+
+Activate flycheck
+
+#+begin_src emacs-lisp :tangle yes
+(require 'flycheck)
+(add-hook 'js2-mode-hook
+          (lambda () (flycheck-mode t)))
+#+end_src
+
 ** Ace Jump
 #+begin_src emacs-lisp :tangle yes
 (require 'ace-jump-mode)
@@ -660,6 +721,11 @@ $ git clone --recursive git@bitbucket.org:shafayetkhan/yasnippet-snippets.git
 (eval-after-load "ace-jump-mode"
   '(ace-jump-mode-enable-mark-sync))
 (define-key global-map (kbd "C-x SPC") 'ace-jump-mode-pop-mark)
+
+;; When org-mode starts it (org-mode-map) overrides the ace-jump-mode.
+(add-hook 'org-mode-hook
+          (lambda ()
+            (local-set-key (kbd "\C-c SPC") 'ace-jump-mode)))
 
 #+end_src
 
@@ -698,6 +764,7 @@ $ git clone --recursive git@bitbucket.org:shafayetkhan/yasnippet-snippets.git
 
 
 ** Magit
+
 #+begin_src emacs-lisp :tangle yes
 ;;; ** Magit
 ;; Magit Keybindings
@@ -710,19 +777,6 @@ $ git clone --recursive git@bitbucket.org:shafayetkhan/yasnippet-snippets.git
 
 #+end_src
 
-** Autocomplete
-#+begin_src emacs-lisp :tangle yes
-
-;; Auto-complete Mode Extra Settings
-(setq
- ac-auto-start 2
- ac-override-local-map nil
- ac-use-menu-map t
- ac-candidate-limit 20)
-
-(global-auto-complete-mode t)
-
-#+end_src
 
 ** Jedi
 #+begin_src emacs-lisp :tangle yes
@@ -969,10 +1023,14 @@ $ git clone --recursive git@bitbucket.org:shafayetkhan/yasnippet-snippets.git
 
 (require 'js2-mode)
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+(add-to-list 'auto-mode-alist '("\\.json$" . js2-mode))
+
+;(add-hook 'js-mode-hook 'js2-minor-mode)
+;(add-hook 'js2-mode-hook 'ac-js2-mode)
 
 (setq js-basic-indent 2)
 (setq-default js2-basic-indent 2)
-
+(setq-default js2-highlight-level 3)
 (setq-default js2-basic-offset 2)
 (setq-default js2-auto-indent-p t)
 (setq-default js2-cleanup-whitespace t)
@@ -1010,6 +1068,22 @@ $ git clone --recursive git@bitbucket.org:shafayetkhan/yasnippet-snippets.git
   (add-hook 'js2-mode-hook 'color-identifiers-mode)
 #+END_SRC
 
+*** js-beautify
+
+#+begin_src emacs-lisp :tangle yes
+(require 'web-beautify) ;; Not necessary if using ELPA package
+(eval-after-load 'js2-mode
+  '(define-key js2-mode-map (kbd "C-c b") 'web-beautify-js))
+
+(eval-after-load 'json-mode
+  '(define-key json-mode-map (kbd "C-c b") 'web-beautify-js))
+
+(eval-after-load 'sgml-mode
+  '(define-key html-mode-map (kbd "C-c b") 'web-beautify-html))
+
+(eval-after-load 'css-mode
+  '(define-key css-mode-map (kbd "C-c b") 'web-beautify-css))
+#+end_src
 *** Refactoring JavaScript
 
     The [[https://github.com/magnars/js2-refactor.el][js2-refactor]] mode should start with `C-c C-m` and then a two-letter mnemonic shortcut.
@@ -1038,7 +1112,7 @@ $ git clone --recursive git@bitbucket.org:shafayetkhan/yasnippet-snippets.git
 
 #+BEGIN_SRC emacs-lisp :tangle yes
   (when (require 'js2-refactor nil t)
-        (js2r-add-keybindings-with-prefix "C-c C-m"))
+        (js2r-add-keybindings-with-prefix "C-c C-="))
 #+END_SRC
 
 *** JavaScript REPL
@@ -1054,7 +1128,7 @@ $ git clone --recursive git@bitbucket.org:shafayetkhan/yasnippet-snippets.git
 #+BEGIN_SRC emacs-lisp :tangle no
   (autoload 'moz-minor-mode "moz" "Mozilla Minor and Inferior Mozilla Modes" t)
 
-  (add-hook 'js-mode-hook 'javascript-custom-setup)
+  (add-hook 'js2-mode-hook 'javascript-custom-setup)
   (defun javascript-custom-setup ()
     (moz-minor-mode 1))
 #+END_SRC
@@ -1066,6 +1140,16 @@ $ git clone --recursive git@bitbucket.org:shafayetkhan/yasnippet-snippets.git
      - C-M-x: send the current function (as recognized by c-mark-function) to MozRepl
      - C-c C-c: send the current function to MozRepl and switch to the interaction buffer
      - C-c C-r: send the current region to MozRepl
+
+*** Tern
+
+#+begin_src emacs-lisp :tangle yes
+(add-hook 'js2-mode-hook (lambda () (tern-mode t)))
+
+(defun delete-tern-process ()
+  (interactive)
+  (delete-process "Tern"))
+#+end_src
 
 *** Server JS with Node.js
 
@@ -1105,9 +1189,9 @@ $ git clone --recursive git@bitbucket.org:shafayetkhan/yasnippet-snippets.git
 #+BEGIN_SRC emacs-lisp :tangle yes
   (defun my/js-keybindings ()
     (interactive)
-    (local-set-key (kbd "C-c C-c") 'js-send-buffer)
-    (local-set-key (kbd "C-c C-r") 'js-send-region)
-    (local-set-key (kbd "C-c C-s") 'js-send-last-sexp)
+    (local-set-key (kbd "C-c C-c") 'js-send-buffer-and-go)
+    (local-set-key (kbd "C-c C-r") 'js-send-region-and-go)
+    (local-set-key (kbd "C-c C-s") 'js-send-last-sexp-and-go)
     (local-set-key (kbd "C-c C-z") 'run-js))
 
   (add-hook 'js-mode-hook 'my/js-keybindings)
@@ -1120,7 +1204,7 @@ $ git clone --recursive git@bitbucket.org:shafayetkhan/yasnippet-snippets.git
   function factorial(n) {
     return n == 0 ? 1 : n * factorial(n - 1);
   }
-  return factorial(16);
+  return factorial(3);
 #+END_SRC
 
 **** Slime-JS
@@ -1133,20 +1217,6 @@ $ git clone --recursive git@bitbucket.org:shafayetkhan/yasnippet-snippets.git
     (when (locate-library "slime-js")
       (require 'setup-slime-js))))
 #+END_SRC
-
-*** Coffee
-
-    Gotta load up CoffeeScript files, but I use a special shell
-    script that loads up my special 'coughy' environment
-
- #+BEGIN_SRC emacs-lisp :tangle yes
-   (when (require 'coffee-mode nil t)
-     (let ((my-coffee-command (concat (getenv "HOME") "/bin/coughy")))
-       (if (file-exists-p my-coffee-command)
-           (setq coffee-command my-coffee-command))))
- #+END_SRC
-
-
 
 ** Web-mode
 #+begin_src emacs-lisp :tangle yes
@@ -1345,5 +1415,16 @@ Setup for Emacs when on Windows.
 #+end_src
 
 * Workarounds
+#+begin_src emacs-lisp :tangle yes
+;; For ControlPath too long error on Tramp with AWS
+(setenv "TMPDIR" "/tmp")
+
+#+end_src
+
+#+begin_src emacs-lisp :tangle yes
+;; Disable tern C-c C-c to show type of variable
+(eval-after-load "js2-mode"
+  '(define-key tern-mode-keymap [(control ?c) (control ?c)] nil))
+#+end_src
 
 #+PROPERTY:    tangle ~/.emacs.d/lisp/shafayet.el

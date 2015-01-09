@@ -24,14 +24,6 @@
 ;;  '(org-export-backends (quote (ascii html icalendar latex odt)))
 ;;  '(orgstruct-heading-prefix-regexp "^;;; +"))
 
-;; Split windows vertically by default
-;; (custom-set-variables
-;;  ;; custom-set-variables was added by Custom.
-;;  ;; If you edit it by hand, you could mess it up, so be careful.
-;;  ;; Your init file should contain only one such instance.
-;;  ;; If there is more than one, they won't work right.
-;;  '(split-height-threshold nil)
-;;  '(split-width-threshold 0))
 
 
 ;; Insert newlines if the point is at the end of the buffer
@@ -122,8 +114,8 @@
 (setq-default fill-column 80)
 
 ;;; Enable Auto Fill Mode
-(add-hook 'text-mode-hook 'turn-on-auto-fill)
-(add-hook 'org-mode-hook 'turn-on-auto-fill)
+;(add-hook 'text-mode-hook 'turn-on-auto-fill)
+;(add-hook 'org-mode-hook 'turn-on-auto-fill)
 
 ;;; Delete Selection Mode - Awesome!
 (delete-selection-mode 1)
@@ -149,6 +141,8 @@
 
 ;;; Skip the Startup Message
 (setq inhibit-startup-message t)
+
+(eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
 
 ;; Change Cursor Style
 ;(setq-default cursor-type 'bar)
@@ -281,13 +275,35 @@ don't match the predicate."
 ;; Set a password
 (setq org-mobile-encryption-password "shafayet")
 
-(setq org-src-fontify-natively t)
-
 (add-hook 'org-mode-hook (lambda()
                            (set (make-local-variable 'electric-indent-functions)
                                 (list (lambda(arg) 'no-indent)))))
 
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((sh         . t)
+   (js         . t)
+   (emacs-lisp . t)
+   (perl       . t)
+   (scala      . t)
+   (clojure    . t)
+   (python     . t)
+   (dot        . t)
+   (css        . t)
+   (plantuml   . t)))
+
+(setq org-confirm-babel-evaluate nil)
+
+; (setq org-src-fontify-natively t)
+(setq org-src-tab-acts-natively t)
+
+(require 'company)
+(require 'company-tern)
+(add-hook 'after-init-hook 'global-company-mode)
+(add-to-list 'company-backends 'company-tern)
+
 (require 'confluence)
+(setq confluence-url "https://layer3tv.atlassian.net/")
 
 (projectile-global-mode)
 
@@ -298,6 +314,10 @@ don't match the predicate."
 ;(yas/initiazlize)
 (add-to-list 'yas/root-directory "~/.emacs.d/plugins/yasnippet-snippets")
 (yas-global-mode 1)
+
+(require 'flycheck)
+(add-hook 'js2-mode-hook
+          (lambda () (flycheck-mode t)))
 
 (require 'ace-jump-mode)
 ;; ace jump mode major function
@@ -319,6 +339,11 @@ don't match the predicate."
 (eval-after-load "ace-jump-mode"
   '(ace-jump-mode-enable-mark-sync))
 (define-key global-map (kbd "C-x SPC") 'ace-jump-mode-pop-mark)
+
+;; When org-mode starts it (org-mode-map) overrides the ace-jump-mode.
+(add-hook 'org-mode-hook
+          (lambda ()
+            (local-set-key (kbd "\C-c SPC") 'ace-jump-mode)))
 
 (require 'multiple-cursors)
 (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
@@ -346,15 +371,6 @@ don't match the predicate."
 (define-key global-map (kbd "C-c g b") 'magit-blame-mode)
 (define-key global-map (kbd "C-c g l") 'magit-log)
 (setq magit-emacsclient-executable "/usr/local/Cellar/emacs/HEAD/bin/emacsclient")
-
-;; Auto-complete Mode Extra Settings
-(setq
- ac-auto-start 2
- ac-override-local-map nil
- ac-use-menu-map t
- ac-candidate-limit 20)
-
-(global-auto-complete-mode t)
 
 ;;; Jedi Settings
 (require 'jedi)
@@ -540,10 +556,14 @@ mouse-3: go to end")
 
 (require 'js2-mode)
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+(add-to-list 'auto-mode-alist '("\\.json$" . js2-mode))
+
+;(add-hook 'js-mode-hook 'js2-minor-mode)
+;(add-hook 'js2-mode-hook 'ac-js2-mode)
 
 (setq js-basic-indent 2)
 (setq-default js2-basic-indent 2)
-
+(setq-default js2-highlight-level 3)
 (setq-default js2-basic-offset 2)
 (setq-default js2-auto-indent-p t)
 (setq-default js2-cleanup-whitespace t)
@@ -567,8 +587,27 @@ mouse-3: go to end")
 
 (add-hook 'js2-mode-hook 'color-identifiers-mode)
 
+(require 'web-beautify) ;; Not necessary if using ELPA package
+(eval-after-load 'js2-mode
+  '(define-key js2-mode-map (kbd "C-c b") 'web-beautify-js))
+
+(eval-after-load 'json-mode
+  '(define-key json-mode-map (kbd "C-c b") 'web-beautify-js))
+
+(eval-after-load 'sgml-mode
+  '(define-key html-mode-map (kbd "C-c b") 'web-beautify-html))
+
+(eval-after-load 'css-mode
+  '(define-key css-mode-map (kbd "C-c b") 'web-beautify-css))
+
 (when (require 'js2-refactor nil t)
-      (js2r-add-keybindings-with-prefix "C-c C-m"))
+      (js2r-add-keybindings-with-prefix "C-c C-="))
+
+(add-hook 'js2-mode-hook (lambda () (tern-mode t)))
+
+(defun delete-tern-process ()
+  (interactive)
+  (delete-process "Tern"))
 
 (autoload 'js-comint "js-comint"
   "Hooking JavaScript interpreter up to the JS Files." t nil)
@@ -591,9 +630,9 @@ mouse-3: go to end")
 
 (defun my/js-keybindings ()
   (interactive)
-  (local-set-key (kbd "C-c C-c") 'js-send-buffer)
-  (local-set-key (kbd "C-c C-r") 'js-send-region)
-  (local-set-key (kbd "C-c C-s") 'js-send-last-sexp)
+  (local-set-key (kbd "C-c C-c") 'js-send-buffer-and-go)
+  (local-set-key (kbd "C-c C-r") 'js-send-region-and-go)
+  (local-set-key (kbd "C-c C-s") 'js-send-last-sexp-and-go)
   (local-set-key (kbd "C-c C-z") 'run-js))
 
 (add-hook 'js-mode-hook 'my/js-keybindings)
@@ -603,11 +642,6 @@ mouse-3: go to end")
   #'(lambda ()
     (when (locate-library "slime-js")
       (require 'setup-slime-js))))
-
-(when (require 'coffee-mode nil t)
-  (let ((my-coffee-command (concat (getenv "HOME") "/bin/coughy")))
-    (if (file-exists-p my-coffee-command)
-        (setq coffee-command my-coffee-command))))
 
 ;; Web-Mode Settings
 (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
@@ -768,3 +802,10 @@ See: `ergoemacs-forward-block'"
             (lambda ()
               (local-set-key (kbd "{") 'c-electric-brace)))
   (message "Emacs on Windows"))
+
+;; For ControlPath too long error on Tramp with AWS
+(setenv "TMPDIR" "/tmp")
+
+;; Disable tern C-c C-c to show type of variable
+(eval-after-load "js2-mode"
+  '(define-key tern-mode-keymap [(control ?c) (control ?c)] nil))

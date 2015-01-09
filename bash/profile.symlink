@@ -80,3 +80,6 @@ export TERM=xterm-256color
 
 # Cask
 export PATH="$HOME/.cask/bin:$PATH"
+
+# npm using homebrew
+export PATH="$HOME/.node/bin:$PATH"
