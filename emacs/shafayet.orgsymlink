@@ -251,7 +251,7 @@ cask
         yasnippet
         ;monokai-theme
         jedi
-        autopair
+;        autopair
         multiple-cursors
         smex
         ido-ubiquitous
@@ -324,7 +324,7 @@ Line Numbers
   (setq visible-bell t)             ;; Get rid of the beeps
 
   ;;; To Enable In All Buffers
-  (autopair-global-mode)
+;  (autopair-global-mode)
 
   ;;; Remove trailing whitespaces
   (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -642,7 +642,30 @@ Fix for electric indent
 
 * Extensions
 
+** function-args
+#+begin_src emacs-lisp :tangle yes
+;; For C/C++
+;;; http://tuhdo.github.io/c-ide.html
+(require 'function-args)
+(require 'cc-mode)
+(fa-config-default)
+(define-key c-mode-map  [(control tab)] 'moo-complete)
+(define-key c++-mode-map  [(control tab)] 'moo-complete)
+(define-key c-mode-map (kbd "M-o")  'fa-show)
+(define-key c++-mode-map (kbd "M-o")  'fa-show)
 
+#+end_src
+** Smartparens
+#+begin_src emacs-lisp :tangle yes
+  (require 'smartparens-config)
+  (setq sp-base-key-bindings 'paredit)
+  (setq sp-autoskip-closing-pair 'always)
+  (setq sp-hybrid-kill-entire-symbol nil)
+  (sp-use-paredit-bindings)
+
+  (show-smartparens-global-mode +1)
+  (smartparens-global-mode 1)
+#+end_src
 ** Company
 
 
@@ -651,6 +674,7 @@ Fix for electric indent
 (require 'company-tern)
 (add-hook 'after-init-hook 'global-company-mode)
 (add-to-list 'company-backends 'company-tern)
+
 #+end_src
 ** Confluence
 
@@ -1004,7 +1028,7 @@ Activate flycheck
 (require 'python-mode)
 (add-to-list 'auto-mode-alist '("\\.py$" . python-mode))
 (setq py-electric-colon-active t)
-(add-hook 'python-mode-hook 'autopair-mode)
+;(add-hook 'python-mode-hook 'autopair-mode)
 (add-hook 'python-mode-hook 'yas-minor-mode)
 
 #+end_src
@@ -1248,6 +1272,35 @@ Activate flycheck
   (c-set-offset 'substatement-open 0))
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 #+end_src
+
+Setup helm-gtags
+#+begin_src emacs-lisp :tangle yes
+(setq
+ helm-gtags-ignore-case t
+ helm-gtags-auto-update t
+ helm-gtags-use-input-at-cursor t
+ helm-gtags-pulse-at-cursor t
+ helm-gtags-prefix-key "\C-cg"
+ helm-gtags-suggested-key-mapping t
+ )
+
+(require 'helm-gtags)
+;; Enable helm-gtags-mode
+(add-hook 'dired-mode-hook 'helm-gtags-mode)
+(add-hook 'eshell-mode-hook 'helm-gtags-mode)
+(add-hook 'c-mode-hook 'helm-gtags-mode)
+(add-hook 'c++-mode-hook 'helm-gtags-mode)
+(add-hook 'asm-mode-hook 'helm-gtags-mode)
+
+(define-key helm-gtags-mode-map (kbd "C-c g a") 'helm-gtags-tags-in-this-function)
+(define-key helm-gtags-mode-map (kbd "C-j") 'helm-gtags-select)
+(define-key helm-gtags-mode-map (kbd "M-.") 'helm-gtags-dwim)
+(define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)
+(define-key helm-gtags-mode-map (kbd "C-c <") 'helm-gtags-previous-history)
+(define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history)
+#+end_src
+
+
 
 * Custom Stuff
 

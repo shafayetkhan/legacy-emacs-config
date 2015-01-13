@@ -13,134 +13,134 @@
 (add-hook 'linum-mode-hook 'fix-linum-size)
 
 ;; (custom-set-variables
-;;  custom-set-variables was added by Custom.
-;;  If you edit it by hand, you could mess it up, so be careful.
-;;  Your init file should contain only one such instance.
-;;  If there is more than one, they won't work right.
-;;  '(custom-enabled-themes (quote (sanityinc-tomorrow-night)))
-;;  '(custom-safe-themes
-;;    (quote
-;;     ("06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" "4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
-;;  '(org-export-backends (quote (ascii html icalendar latex odt)))
-;;  '(orgstruct-heading-prefix-regexp "^;;; +"))
+  ;;  custom-set-variables was added by Custom.
+  ;;  If you edit it by hand, you could mess it up, so be careful.
+  ;;  Your init file should contain only one such instance.
+  ;;  If there is more than one, they won't work right.
+  ;;  '(custom-enabled-themes (quote (sanityinc-tomorrow-night)))
+  ;;  '(custom-safe-themes
+  ;;    (quote
+  ;;     ("06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" "4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
+  ;;  '(org-export-backends (quote (ascii html icalendar latex odt)))
+  ;;  '(orgstruct-heading-prefix-regexp "^;;; +"))
 
 
 
-;; Insert newlines if the point is at the end of the buffer
-(setq next-line-add-newlines t)
+  ;; Insert newlines if the point is at the end of the buffer
+  (setq next-line-add-newlines t)
 
-;;Wind-move
-(global-set-key (kbd "C-c C-j") 'windmove-left)
-(global-set-key (kbd "C-c C-k") 'windmove-down)
-(global-set-key (kbd "C-c C-l") 'windmove-up)
-(global-set-key (kbd "C-c C-;") 'windmove-right)
+  ;;Wind-move
+  (global-set-key (kbd "C-c C-j") 'windmove-left)
+  (global-set-key (kbd "C-c C-k") 'windmove-down)
+  (global-set-key (kbd "C-c C-l") 'windmove-up)
+  (global-set-key (kbd "C-c C-;") 'windmove-right)
 
-;; Remove scrollbars, menu bars, and toolbars
-; when is a special form of "if", with no else clause, it reads:
-; (when <condition> <code-to-execute-1> <code-to-execute2> ...)
-(when (fboundp 'menu-bar-mode) (menu-bar-mode -1))
-(when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
-(when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+  ;; Remove scrollbars, menu bars, and toolbars
+  ; when is a special form of "if", with no else clause, it reads:
+  ; (when <condition> <code-to-execute-1> <code-to-execute2> ...)
+  (when (fboundp 'menu-bar-mode) (menu-bar-mode -1))
+  (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+  (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 
-(setq initial-scratch-message "") ;; Uh, I know what Scratch is for
-(setq visible-bell t)             ;; Get rid of the beeps
+  (setq initial-scratch-message "") ;; Uh, I know what Scratch is for
+  (setq visible-bell t)             ;; Get rid of the beeps
 
-;;; To Enable In All Buffers
-(autopair-global-mode)
+  ;;; To Enable In All Buffers
+;  (autopair-global-mode)
 
-;;; Remove trailing whitespaces
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+  ;;; Remove trailing whitespaces
+  (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
-;;; System copy to work with Emacs copy
-(setq x-select-enable-clipboard t)
+  ;;; System copy to work with Emacs copy
+  (setq x-select-enable-clipboard t)
 
-;;; Clipboard Copy/Pasting
-(setq x-select-enable-clipboard t)
+  ;;; Clipboard Copy/Pasting
+  (setq x-select-enable-clipboard t)
 
-;;; Run Emacs Server
-(server-start)
+  ;;; Run Emacs Server
+  (server-start)
 
-;; ;;; Enable Mouse Mode for Terminal
-;; (require 'mouse)
-;; (xterm-mouse-mode t)
+  ;; ;;; Enable Mouse Mode for Terminal
+  ;; (require 'mouse)
+  ;; (xterm-mouse-mode t)
 
-;;; Enable Mouse Support
-(unless window-system
-  (require 'mouse)
-  (xterm-mouse-mode t)
-  (global-set-key [mouse-4] '(lambda ()
-                               (interactive)
-                               (scroll-down 1)))
-  (global-set-key [mouse-5] '(lambda ()
-                               (interactive)
-                               (scroll-up 1)))
-  (defun track-mouse (e))
-  (setq mouse-sel-mode t)
- )
+  ;;; Enable Mouse Support
+  (unless window-system
+    (require 'mouse)
+    (xterm-mouse-mode t)
+    (global-set-key [mouse-4] '(lambda ()
+                                 (interactive)
+                                 (scroll-down 1)))
+    (global-set-key [mouse-5] '(lambda ()
+                                 (interactive)
+                                 (scroll-up 1)))
+    (defun track-mouse (e))
+    (setq mouse-sel-mode t)
+   )
 
-;;; Make The Y Or N Suffice For A Yes Or No Question
-(fset 'yes-or-no-p 'y-or-n-p)
+  ;;; Make The Y Or N Suffice For A Yes Or No Question
+  (fset 'yes-or-no-p 'y-or-n-p)
 
 
-;;; Bind RET to py-newline-and-indent
-(add-hook 'c-mode-common-hook '(lambda ()
+  ;;; Bind RET to py-newline-and-indent
+  (add-hook 'c-mode-common-hook '(lambda ()
+                                   (local-set-key (kbd "RET")
+                                                  'newline-and-indent)))
+  (add-hook 'python-mode-hook '(lambda ()
                                  (local-set-key (kbd "RET")
                                                 'newline-and-indent)))
-(add-hook 'python-mode-hook '(lambda ()
-                               (local-set-key (kbd "RET")
-                                              'newline-and-indent)))
 
-;;; Set Spaces in place of Tabs
-(setq-default indent-tabs-mode nil)
-(setq tab-width 4)
+  ;;; Set Spaces in place of Tabs
+  (setq-default indent-tabs-mode nil)
+  (setq tab-width 4)
 
-;;; Set Line-by-Line Scrolling
-(setq scroll-step 1)
+  ;;; Set Line-by-Line Scrolling
+  (setq scroll-step 1)
 
-;;; Display Time
-;(display-time)
+  ;;; Display Time
+  ;(display-time)
 
-;;; Place Backup Files in Specific Directory
-;;; Backup Files.
-(setq make-backup-files t)
+  ;;; Place Backup Files in Specific Directory
+  ;;; Backup Files.
+  (setq make-backup-files t)
 
-;;; Enable versioning with default values
-(setq version-control t)
+  ;;; Enable versioning with default values
+  (setq version-control t)
 
-;;; Save all backup file in this directory.
-(setq backup-directory-alist (quote ((".*" . "~/.emacs.d/.emacs_backups/"))))
+  ;;; Save all backup file in this directory.
+  (setq backup-directory-alist (quote ((".*" . "~/.emacs.d/.emacs_backups/"))))
 
-;;; Set the fill column
-(setq-default fill-column 80)
+  ;;; Set the fill column
+  (setq-default fill-column 80)
 
-;;; Enable Auto Fill Mode
-;(add-hook 'text-mode-hook 'turn-on-auto-fill)
-;(add-hook 'org-mode-hook 'turn-on-auto-fill)
+  ;;; Enable Auto Fill Mode
+  ;(add-hook 'text-mode-hook 'turn-on-auto-fill)
+  ;(add-hook 'org-mode-hook 'turn-on-auto-fill)
 
-;;; Delete Selection Mode - Awesome!
-(delete-selection-mode 1)
+  ;;; Delete Selection Mode - Awesome!
+  (delete-selection-mode 1)
 
-;;; Auto-switch to split-window buffer
-(global-set-key (kbd "C-x 3") 'split-window-horizontally-other) ; open new window horizontally and switch to it
-(defun split-window-horizontally-other ()
-        (interactive)
-        (split-window-horizontally)
-        (other-window 1)
-)
+  ;;; Auto-switch to split-window buffer
+  (global-set-key (kbd "C-x 3") 'split-window-horizontally-other) ; open new window horizontally and switch to it
+  (defun split-window-horizontally-other ()
+          (interactive)
+          (split-window-horizontally)
+          (other-window 1)
+  )
 
-(global-set-key (kbd "C-x 2") 'split-window-vertically-other) ; open new window vertically and switch to it
-(defun split-window-vertically-other ()
- (interactive)
- (split-window-vertically)
- (other-window 1)
-)
+  (global-set-key (kbd "C-x 2") 'split-window-vertically-other) ; open new window vertically and switch to it
+  (defun split-window-vertically-other ()
+   (interactive)
+   (split-window-vertically)
+   (other-window 1)
+  )
 
-;;; Auto-refresh buffer
-(global-auto-revert-mode t)
+  ;;; Auto-refresh buffer
+  (global-auto-revert-mode t)
 
 
-;;; Skip the Startup Message
-(setq inhibit-startup-message t)
+  ;;; Skip the Startup Message
+  (setq inhibit-startup-message t)
 
 (eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
 
@@ -296,6 +296,23 @@ don't match the predicate."
 
 ; (setq org-src-fontify-natively t)
 (setq org-src-tab-acts-natively t)
+
+;; For C/C++
+;;; http://tuhdo.github.io/c-ide.html
+(require 'function-args)
+(require 'cc-mode)
+(fa-config-default)
+(define-key c-mode-map  [(tab)] 'moo-complete)
+(define-key c++-mode-map  [(tab)] 'moo-complete)
+
+(require 'smartparens-config)
+(setq sp-base-key-bindings 'paredit)
+(setq sp-autoskip-closing-pair 'always)
+(setq sp-hybrid-kill-entire-symbol nil)
+(sp-use-paredit-bindings)
+
+(show-smartparens-global-mode +1)
+(smartparens-global-mode 1)
 
 (require 'company)
 (require 'company-tern)
@@ -551,7 +568,7 @@ mouse-3: go to end")
 (require 'python-mode)
 (add-to-list 'auto-mode-alist '("\\.py$" . python-mode))
 (setq py-electric-colon-active t)
-(add-hook 'python-mode-hook 'autopair-mode)
+;(add-hook 'python-mode-hook 'autopair-mode)
 (add-hook 'python-mode-hook 'yas-minor-mode)
 
 (require 'js2-mode)
@@ -666,6 +683,30 @@ mouse-3: go to end")
   (setq c-basic-offset 4)
   (c-set-offset 'substatement-open 0))
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+
+(setq
+ helm-gtags-ignore-case t
+ helm-gtags-auto-update t
+ helm-gtags-use-input-at-cursor t
+ helm-gtags-pulse-at-cursor t
+ helm-gtags-prefix-key "\C-cg"
+ helm-gtags-suggested-key-mapping t
+ )
+
+(require 'helm-gtags)
+;; Enable helm-gtags-mode
+(add-hook 'dired-mode-hook 'helm-gtags-mode)
+(add-hook 'eshell-mode-hook 'helm-gtags-mode)
+(add-hook 'c-mode-hook 'helm-gtags-mode)
+(add-hook 'c++-mode-hook 'helm-gtags-mode)
+(add-hook 'asm-mode-hook 'helm-gtags-mode)
+
+(define-key helm-gtags-mode-map (kbd "C-c g a") 'helm-gtags-tags-in-this-function)
+(define-key helm-gtags-mode-map (kbd "C-j") 'helm-gtags-select)
+(define-key helm-gtags-mode-map (kbd "M-.") 'helm-gtags-dwim)
+(define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)
+(define-key helm-gtags-mode-map (kbd "C-c <") 'helm-gtags-previous-history)
+(define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history)
 
 (defadvice kill-ring-save (before slick-copy activate compile) "When called
   interactively with no active region, copy a single line instead."
