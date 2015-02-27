@@ -14,18 +14,11 @@ export PIP_DOWNLOAD_CACHE=$HOME/.pip/cache
 # Default Arguments for virtualenv
 export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--no-site-packages'
 
-
-### default editor to Emacs
-export EDITOR=emacs
-
 ### Added by the Heroku Toolbelt
-export PATH="/usr/local/heroku/bin:$PATH"
+#export PATH="/usr/local/heroku/bin:$PATH"
 
 ### Postgresql
-export PATH="/Applications/Postgres93.app/Contents/MacOs/bin:$PATH"
-
-export PATH="/usr/local/Cellar/emacs/24.3/bin:$PATH"
-alias ec='/usr/local/Cellar/emacs/24.3/bin/emacsclient'
+#export PATH="/Applications/Postgres93.app/Contents/MacOs/bin:$PATH"
 
 
 # Set Bash History to 32768
@@ -66,8 +59,13 @@ PATH=$PATH:$OLDPATH
 #   Set =EDITOR= to start up an =emacsclient=, but do that from the one
 #   I built from Homebrew:
 
-export ALTERNATE_EDITOR=/usr/local/bin/emacs
-export EDITOR=/usr/local/bin/emacsclient
+# http://stackoverflow.com/questions/5570451/how-to-start-emacs-server-only-if-it-is-not-started
+export ALTERNATE_EDITOR=""
+alias e='emacsclient -n -c'
+
+### default editor to Emacs
+export EDITOR='emacsclient -c'
+
 
 # Global Aliases
 

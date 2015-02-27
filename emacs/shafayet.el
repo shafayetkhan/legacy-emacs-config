@@ -297,13 +297,18 @@ don't match the predicate."
 ; (setq org-src-fontify-natively t)
 (setq org-src-tab-acts-natively t)
 
+(require 'edit-server)
+(edit-server-start)
+
 ;; For C/C++
 ;;; http://tuhdo.github.io/c-ide.html
 (require 'function-args)
 (require 'cc-mode)
 (fa-config-default)
-(define-key c-mode-map  [(tab)] 'moo-complete)
-(define-key c++-mode-map  [(tab)] 'moo-complete)
+(define-key c-mode-map  [(control tab)] 'moo-complete)
+(define-key c++-mode-map  [(control tab)] 'moo-complete)
+(define-key c-mode-map (kbd "M-o")  'fa-show)
+(define-key c++-mode-map (kbd "M-o")  'fa-show)
 
 (require 'smartparens-config)
 (setq sp-base-key-bindings 'paredit)

@@ -641,7 +641,11 @@ Fix for electric indent
 
 
 * Extensions
-
+** edit-server
+#+begin_src emacs-lisp :tangle yes
+(require 'edit-server)
+(edit-server-start)
+#+end_src
 ** function-args
 #+begin_src emacs-lisp :tangle yes
 ;; For C/C++

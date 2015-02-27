@@ -80,3 +80,4 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias godev="cd ~/dev"
 alias gomac="cd ~/vnc/mac"
+alias cpcask="scp ~/.emacs.d/Cask braveheart:/home/shafi/.emacs.d/Cask"
